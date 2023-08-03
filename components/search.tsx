@@ -6,17 +6,13 @@ import {ProductCollectionDocument, ProductCollectionQuery, ProductFilterInput} f
 import {serverApolloClient} from "@/lib/auth/useAuthenticatedApolloClient";
 
 function Search() {
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
   const [data, setData] = useState([]);
-  const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({});
+  // const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({});
   const handleChange = async (e) => {
-    setInput(e.target.value);
-      console.log(e.target.value);
-
-      if (input) {
-          setDebouncedFilter({ search: input });
-      } else {
-          setDebouncedFilter({});
+      let debouncedFilter = {};
+      if (e.target.value) {
+          debouncedFilter = { search: e.target.value };
       }
 
       const productResult: ApolloQueryResult<ProductCollectionQuery | undefined> =
