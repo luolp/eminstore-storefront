@@ -14,7 +14,7 @@ function WishList() {
   return (
     <>
       <Head>
-        <title>wefootwear | Wishlist</title>
+        <title>eminstore | Wishlist</title>
       </Head>
       <div className="w-full min-h-screen relative bg-cusgray pb-10">
         <Header />

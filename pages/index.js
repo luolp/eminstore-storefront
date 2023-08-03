@@ -6,7 +6,8 @@ import Header from "../components/header";
 import Head from "next/head";
 
 export default function Home() {
-  const line = "wefootwear";
+  //
+  const line = "eminstore";
 
   const sentence = {
     animate: {
@@ -42,7 +43,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>wefootwear | Home</title>
+        <title>eminstore | Home</title>
       </Head>
       <div className="w-full h-screen relative">
         <Header />
@@ -112,23 +113,23 @@ export default function Home() {
               <img
                 className="h-screen object-cover w-full"
                 loading="lazy"
-                src="https://i.ibb.co/pffTtVv/https-hypebeast-com-image-2018-12-these-are-the-best-sneakers-of-2018-005.jpg"
+                src="/banner1.jpg"
               />
             </div>
             <div>
               <img
                 className="h-screen object-cover w-full"
                 loading="lazy"
-                src="https://i.ibb.co/4YskC1T/c095795f992f84b92b16c65b93ecb5f5.jpg"
+                src="\banner2.jpg"
               />
             </div>
-            <div>
-              <img
-                className="h-screen object-cover w-full"
-                loading="lazy"
-                src="https://i.ibb.co/bvvFBPt/R.jpg"
-              />
-            </div>
+            {/*<div>*/}
+              {/*<img*/}
+                {/*className="h-screen object-cover w-full"*/}
+                {/*loading="lazy"*/}
+                {/*src="/3.png"*/}
+              {/*/>*/}
+            {/*</div>*/}
           </Carousel>
         </motion.div>
       </div>

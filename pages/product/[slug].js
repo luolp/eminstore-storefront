@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { addToBasket } from "../../slices/basketSlice";
 import NotFound from "../404";
 import { addToWishlist } from "../../slices/wishlistSlice";
-import ProductCard from "../../components/productcard";
+import Productcard from "../../components/productcard";
 import Head from "next/head";
 
 function Product({ dataItem, dataAlso }) {
@@ -186,7 +186,7 @@ function Product({ dataItem, dataAlso }) {
                 .filter((it, idx) => it.name != dataItem.name)
                 .map((data, idx) => {
                   if (idx < 4)
-                    return <ProductCard key={data.slug} item={data} />;
+                    return <Productcard key={data.slug} item={data} />;
                 })}
             </div>
           </div>

@@ -10,13 +10,13 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta name="application-name" content="wefootwear Store" />
+          <meta name="application-name" content="eminstore" />
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta
             name="apple-mobile-web-app-status-bar-style"
             content="default"
           />
-          <meta name="apple-mobile-web-app-title" content="wefootwear Store" />
+          <meta name="apple-mobile-web-app-title" content="eminstore" />
           <meta name="description" content="Shoe Store Based in Indonesia" />
           <meta name="format-detection" content="telephone=no" />
           <meta name="mobile-web-app-capable" content="yes" />
@@ -60,8 +60,8 @@ class MyDocument extends Document {
           />
 
           <meta name="twitter:card" content="summary" />
-          <meta name="twitter:url" content="https://wefootwear.vercel.com" />
-          <meta name="twitter:title" content="wefootwear Store" />
+          <meta name="twitter:url" content="https://eminstore.com" />
+          <meta name="twitter:title" content="eminstore" />
           <meta
             name="twitter:description"
             content="Shoe Store based in Indonesia"
@@ -69,13 +69,13 @@ class MyDocument extends Document {
           <meta name="twitter:image" content="/icon-192x192.png" />
           <meta name="twitter:creator" content="@mudzikale" />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="wefootwear Store" />
+          <meta property="og:title" content="eminstore" />
           <meta
             property="og:description"
             content="Shoe Store based in Indonesia"
           />
-          <meta property="og:site_name" content="wefootwear" />
-          <meta property="og:url" content="https://wefootwear.vercel.com" />
+          <meta property="og:site_name" content="eminstore" />
+          <meta property="og:url" content="https://eminstore.com" />
           <meta property="og:image" content="/icon-192x192.png" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="manifest" href="/manifest.json" />

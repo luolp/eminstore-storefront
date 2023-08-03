@@ -1,0 +1,27 @@
+query ProductPaths($after: String, $channel: String!) {
+  products(first: 100, channel: $channel, after: $after) {
+    pageInfo {
+      ...PageInfoFragment
+    }
+    edges {
+      node {
+              id,
+              slug,
+              name,
+              updatedAt,
+              thumbnail {
+                url
+              },
+              category {
+                slug,name
+              },
+              pricing {
+                priceRange{
+                  start{currency,gross{currency,amount},net{currency,amount},tax{currency,amount}},
+                  stop{currency,gross{currency,amount},net{currency,amount},tax{currency,amount}}
+                }
+              }
+            }
+    }
+  }
+}

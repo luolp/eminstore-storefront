@@ -31,7 +31,7 @@ function Layout({ children, categories, types, setSort }) {
         </svg>
       </button>
       <div className="max-w-6xl mx-auto pt-14 md:px-0">
-        <TopCategory categories={categories} />
+        <TopCategory typesData={types} />
         <div className="grid grid-cols-4 gap-x-6">
           <div
             onClick={() => setOpen(!open)}
@@ -39,7 +39,7 @@ function Layout({ children, categories, types, setSort }) {
               open ? `fixed` : `hidden`
             } lg:static lg:inline bg-gray-400 lg:bg-cusgray h-screen bg-opacity-30 z-20 flex w-full justify-center place-items-center top-0 lg:p-4`}
           >
-            <SideCategory typesData={types} />
+            <SideCategory categories={categories} />
           </div>
           <div className="col-span-4 md:col-span-4 lg:col-span-3 flex flex-col py-4 mx-2 md:mx-0">
             <ShopCarousel />

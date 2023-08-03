@@ -5,10 +5,12 @@ import { motion } from "framer-motion";
 import Router from "next/router";
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../slices/wishlistSlice";
+import { useRegions } from "./RegionsProvider";
 
 function ProductCard({ item }) {
-  const { size, image } = item.prop[0];
+  const thumbnailUrl = item.thumbnail?.url;
   const dispatch = useDispatch();
+  const { formatPrice } = useRegions();
 
   return (
     <div className="rounded-xl cursor-pointer">
@@ -23,7 +25,7 @@ function ProductCard({ item }) {
             width={700}
             objectFit="cover"
             loading="lazy"
-            src={image[0]}
+            src={thumbnailUrl}
             alt=""
             className="rounded-xl w-full h-full bg-cusgray"
           />
@@ -57,20 +59,22 @@ function ProductCard({ item }) {
         className="px-2 py-2"
       >
         <p className="text-sm line-clamp-1">{item.name}</p>
-        <p className="text-xs my-2 text-gray-400">{item.color}</p>
+        <p className="text-xs my-2 text-gray-400">{item.category.name}</p>
+
         {/* <p className="text-sm font-semibold">Rp {price}</p> */}
-        <NumberFormat
-          value={item.price}
-          className="text-sm font-semibold text-cusblack"
-          displayType={"text"}
-          thousandSeparator={true}
-          prefix={"Rp"}
-          renderText={(value, props) => (
-            <p className="text-sm font-semibold" {...props}>
-              {value}
-            </p>
-          )}
-        />
+        <div>{formatPrice(item.pricing?.priceRange?.start?.gross)}</div>
+        {/*<NumberFormat*/}
+          {/*value={item.price}*/}
+          {/*className="text-sm font-semibold text-cusblack"*/}
+          {/*displayType={"text"}*/}
+          {/*thousandSeparator={true}*/}
+          {/*prefix={"Rp"}*/}
+          {/*renderText={(value, props) => (*/}
+            {/*<p className="text-sm font-semibold" {...props}>*/}
+              {/*{value}*/}
+            {/*</p>*/}
+          {/*)}*/}
+        {/*/>*/}
       </div>
     </div>
   );

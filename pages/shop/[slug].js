@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CardSkeleton from "../../components/cardskeleton";
 import Layout from "../../components/layout";
-import ProductCard from "../../components/productcard";
+import Productcard from "../../components/productcard";
 import { recentCategory } from "../../slices/categorySlice";
 import Head from "next/head";
 
@@ -66,11 +66,11 @@ function Category({ data, dataItems, dataTypes }) {
   return (
     <>
       <Head>
-        <title>wefootwear | Shop</title>
+        <title>eminstore | Shop</title>
       </Head>
       <Layout categories={data} setSort={setSort} types={dataTypes}>
         {data_items.length > 0 ? (
-          data_items.map((item) => <ProductCard key={item.slug} item={item} />)
+          data_items.map((item) => <Productcard key={item.slug} item={item} />)
         ) : (
           <p className="col-span-full mx-auto my-10 text-sm text-gray-400">
             No item found

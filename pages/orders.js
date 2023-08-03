@@ -58,7 +58,7 @@ function Order({ orders, session }) {
   return (
     <>
       <Head>
-        <title>wefootwear | Orders</title>
+        <title>eminstore | Orders</title>
       </Head>
       <div className="w-full min-h-screen relative bg-cusgray pb-10">
         <Header />

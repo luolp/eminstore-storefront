@@ -1,17 +1,34 @@
 import React from "react";
 import { useState } from "react";
 import Router from "next/router";
+import { ApolloQueryResult } from "@apollo/client";
+import {ProductCollectionDocument, ProductCollectionQuery, ProductFilterInput} from "@/saleor/api";
+import {serverApolloClient} from "@/lib/auth/useAuthenticatedApolloClient";
 
 function Search() {
   const [input, setInput] = useState("");
   const [data, setData] = useState([]);
+  const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({});
   const handleChange = async (e) => {
     setInput(e.target.value);
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_APIURL}/items?name_contains=${input}`
-    );
-    const data = await res.json();
-    setData(data);
+      console.log(e.target.value);
+
+      if (input) {
+          setDebouncedFilter({ search: input });
+      } else {
+          setDebouncedFilter({});
+      }
+
+      // TODO .. 为什么这里会报错？
+      const productResult: ApolloQueryResult<ProductCollectionQuery | undefined> =
+          await serverApolloClient.query({
+              query: ProductCollectionDocument,
+              variables: { channel: 'default-channel', locale: 'EN_US' }
+          });
+      const productEdges = productResult.data?.products?.edges || [];
+      const products = productEdges.map((edge) => edge.node);
+
+    setData(products);
   };
   return (
     <div className="flex relative group md:ml-auto justify-between pr-4 place-items-center flex-grow h-full rounded-3xl bg-white">

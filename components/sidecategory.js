@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { recentCategory, selectCategory } from "../slices/categorySlice";
 
-function SideCategory({ typesData }) {
+function SideCategory({ categories }) {
   const dispatch = useDispatch();
   const data = useSelector(recentCategory);
   const [recent, setRecent] = useState();
@@ -21,7 +21,7 @@ function SideCategory({ typesData }) {
             All products
           </button>
         </li>
-        {typesData.map((type, idx) => (
+        {categories && categories.length > 0 && categories.map((type) => (
           <li key={type.slug}>
             <button
               className={`${

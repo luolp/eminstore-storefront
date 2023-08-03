@@ -6,7 +6,7 @@ function OurStore() {
   return (
     <>
       <Head>
-        <title>wefootwear | Store</title>
+        <title>eminstore | Store</title>
       </Head>
       <div className="w-full min-h-screen bg-cusgray ">
         <Header />
@@ -42,7 +42,7 @@ function OurStore() {
               </h1>
               <div className="my-2">
                 <h3 className="mb-1 text-lg font font-semibold">
-                  Wefootwear Offline Store
+                  EminStore Offline Store
                 </h3>
                 <p className="text-sm">
                   Jl. Brigjen Katamso No. 54, West Progo.

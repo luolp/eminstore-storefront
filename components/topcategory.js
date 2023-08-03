@@ -3,12 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/dist/client/router";
 import Search from "./search";
 
-function TopCategory({ categories }) {
+function TopCategory({ typesData }) {
   const { asPath } = useRouter();
   useEffect(() => {
     setIsActive(asPath);
   }, [asPath]);
-
   const [isActive, setIsActive] = useState("/shop");
   return (
     <div className="navbot bg-cusgray z-30 w-full px-1 md:px-0">
@@ -25,7 +24,7 @@ function TopCategory({ categories }) {
               All items
             </button>
           </Link>
-          {categories.map((cat, idx) => (
+          {typesData && typesData.length > 0 && typesData.map((cat) => (
             <Link key={cat.slug} href={`/shop/${cat.slug}`}>
               <button
                 className={`${
