@@ -50,7 +50,7 @@ function Search() {
                 >
                   <span>
                     <img
-                      src={item.prop[0].image[0]}
+                      src={item.thumbnail?.url}
                       className="w-7 h-7 mr-1 rounded-lg"
                       alt=""
                     />
