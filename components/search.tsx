@@ -19,11 +19,10 @@ function Search() {
           setDebouncedFilter({});
       }
 
-      // TODO .. 为什么这里会报错？
       const productResult: ApolloQueryResult<ProductCollectionQuery | undefined> =
           await serverApolloClient.query({
               query: ProductCollectionDocument,
-              variables: { channel: 'default-channel', locale: 'EN_US' }
+              variables: { filter: debouncedFilter, channel: 'default-channel', locale: 'EN_US' }
           });
       const productEdges = productResult.data?.products?.edges || [];
       const products = productEdges.map((edge) => edge.node);
