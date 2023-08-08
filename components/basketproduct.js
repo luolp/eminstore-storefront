@@ -1,18 +1,19 @@
 import React from "react";
-import NumberFormat from "react-number-format";
 import { useDispatch } from "react-redux";
 import { removeFromBasket, plusItem, minusItem } from "../slices/basketSlice";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import {useRegions} from "./RegionsProvider";
 
 function BasketProduct({ item, idx }) {
+    const { formatPrice } = useRegions();
   const dispatch = useDispatch();
   return (
     <div
       className="product md:flex justify-between mb-6"
       suppressHydrationWarning
     >
-      <Link href={"/product/" + item.slug}>
+      <Link href={"/product/" + item.productSlug + "/" + item.sku}>
         <div className="image md:flex cursor-pointer">
           <motion.div
             initial={{ scale: 1.5, x: 50, y: -50, opacity: 0 }}
@@ -20,34 +21,27 @@ function BasketProduct({ item, idx }) {
           >
             <img
               className="w-full md:w-32 h-32 object-cover rounded-xl"
-              src={item.prop[0].image[0]}
+              src={item.media[0].url}
               alt=""
             />
           </motion.div>
           <div className="ml-3 flex flex-col text-cusblack justify-between py-2">
-            <p className="font-medium">{item.name}</p>
+            <p className="font-medium">{item.productName}{item.productVariantCount > 1 ? `（${item.name}）` : ''}</p>
             <ul className="text-xs md:text-sm leading-relaxed text-gray-400">
-              <li>Color: {item.color}</li>
-              <li>Design ID: {item.category.slug}</li>
+                {item.attributes && item.attributes.map((attribute) => (
+                    attribute.values[0] && (
+                        <li key={attribute.attribute.id}>
+                            {attribute.attribute.name}: {attribute.values[0].name}
+                        </li>
+                    )
+                ))}
               <li>Quantity: {item.quantity}</li>
-              <li>Size: {item.selectedSizeProp}</li>
             </ul>
           </div>
         </div>
       </Link>
       <div className="flex flex-col justify-between py-1">
-        <NumberFormat
-          value={item.price}
-          className="font-semibold text-cusblack text-right"
-          displayType={"text"}
-          thousandSeparator={true}
-          prefix={"Rp"}
-          renderText={(value, props) => (
-            <h1 className="font-semibold text-cusblack text-right" {...props}>
-              {value}
-            </h1>
-          )}
-        />
+          <p className="font-semibold text-right text-cusblack">{formatPrice(item.pricing?.price?.gross)}</p>
         <div className="flex ml-auto text-cusblack mt-1 md:mt-0">
           <button
             onClick={() => {

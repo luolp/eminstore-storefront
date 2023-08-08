@@ -3,6 +3,7 @@ fragment ProductDetailsFragment on Product {
   name
   slug
   description
+  desc: metafield(key: "desc")
   seoDescription
   seoTitle
   isAvailableForPurchase

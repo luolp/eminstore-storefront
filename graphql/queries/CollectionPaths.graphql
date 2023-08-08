@@ -5,6 +5,7 @@ query CollectionPaths($after: String, $channel: String!) {
     }
     edges {
       node {
+        id,
         slug,
         name
       }

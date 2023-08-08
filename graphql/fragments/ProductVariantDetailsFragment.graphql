@@ -5,7 +5,11 @@ fragment ProductVariantDetailsFragment on ProductVariant {
     id
     name
   }
+  sku
   quantityAvailable
+  selectionAttributes: attributes(variantSelection: VARIANT_SELECTION) {
+    ...SelectedAttributeDetailsFragment
+  }
   attributes {
     ...SelectedAttributeDetailsFragment
   }

@@ -23,6 +23,7 @@ function ProductCard({ item }) {
           <Image
             height={700}
             width={700}
+            quality={100}
             objectFit="cover"
             loading="lazy"
             src={thumbnailUrl}
@@ -61,8 +62,7 @@ function ProductCard({ item }) {
         <p className="text-sm line-clamp-1">{item.name}</p>
         <p className="text-xs my-2 text-gray-400">{item.category.name}</p>
 
-        {/* <p className="text-sm font-semibold">Rp {price}</p> */}
-        <div>{formatPrice(item.pricing?.priceRange?.start?.gross)}</div>
+         <p className="text-sm font-semibold">{formatPrice(item.pricing?.priceRange?.start?.gross)}</p>
         {/*<NumberFormat*/}
           {/*value={item.price}*/}
           {/*className="text-sm font-semibold text-cusblack"*/}
