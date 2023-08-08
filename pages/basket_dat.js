@@ -195,7 +195,7 @@ function Basket() {
                   ) : (
                     <img
                       className="w-6 h-6 mx-auto"
-                      src="https://i.ibb.co/pL1TJSg/Rolling-1s-200px-2.gif"
+                      src="/Rolling-1s-200px-2.gif"
                       alt=""
                     />
                   )}

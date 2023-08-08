@@ -9,6 +9,9 @@ import NotFound from "../404";
 import { addToWishlist } from "../../slices/wishlistSlice";
 import Productcard from "../../components/productcard";
 import Head from "next/head";
+import {ProductCollectionDocument, ProductCollectionQuery} from "../../saleor/api";
+import {serverApolloClient} from "../../lib/auth/useAuthenticatedApolloClient";
+import {ApolloQueryResult} from "@apollo/client/index";
 
 function Product({ dataItem, dataAlso }) {
   const [selectedSize, setSelectedSize] = useState(0);
@@ -197,12 +200,18 @@ function Product({ dataItem, dataAlso }) {
 }
 
 export async function getStaticPaths() {
-  const res = await fetch(process.env.NEXT_PUBLIC_APIURL + "/items");
-  const data = await res.json();
+    // 所有商品
+    const productResult: ApolloQueryResult<ProductCollectionQuery | undefined> =
+        await serverApolloClient.query({
+            query: ProductCollectionDocument,
+            variables: { channel: 'default-channel', locale: 'EN_US' }
+        });
+    const productEdges = productResult.data?.products?.edges || [];
+    const products = productEdges.map((edge) => edge.node);
 
-  const paths = data.map((cat) => ({
-    params: { slug: cat.slug },
-  }));
+    const paths = products.map((product) => ({
+      params: { slug: product.slug },
+    }));
 
   return {
     paths,
