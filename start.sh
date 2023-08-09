@@ -1,0 +1,1 @@
+nohup yarn start >/opt/eminstore/log/storefront-run.log 2>&1 &
