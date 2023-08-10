@@ -1,3 +1,5 @@
+const checkoutEmbededInStorefrontPath = "/saleor-app-checkout";
+
 module.exports = {
   images: {
     domains: ["data.eminstore.com"],
@@ -30,6 +32,18 @@ module.exports = {
           {
               source: '/checkout',
               destination: 'https://checkout.eminstore.com/checkout-spa/',
+          },
+          {
+              source: `${checkoutEmbededInStorefrontPath}/`,
+              destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
+          },
+          {
+              source: `${checkoutEmbededInStorefrontPath}/:path*/`,
+              destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*/`,
+          },
+          {
+              source: `${checkoutEmbededInStorefrontPath}/:path*`,
+              destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
           },
       ];
   },
