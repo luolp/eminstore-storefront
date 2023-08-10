@@ -89,6 +89,10 @@ function Product({ product, dataAlso, variantSKU }) {
         variantInfo.productName = product.name;
         variantInfo.productSlug = product.slug;
         variantInfo.productVariantCount = product.variants.length;
+        // 如果变体图片数组为空则使用产品图片数组
+        if (!variantInfo.media || variantInfo.media.length === 0) {
+            variantInfo.media = product.media;
+        }
 
         variantInfoMap[tempVariantKey] = variantInfo;
     });
@@ -165,15 +169,13 @@ function Product({ product, dataAlso, variantSKU }) {
                         <img
                             // className=" h-60 object-cover w-full md:rounded-2xl"
                             className=" object-cover w-full md:rounded-2xl cursor-pointer"
-                            src={
-                                (variantInfoMap[selectedVariantKey]["media"] || product["media"])?.[imgSelected]?.url || ''
-                            }
+                            src={variantInfoMap[selectedVariantKey]["media"][imgSelected].url}
                             alt=""
                             onClick={handleImageClick}
                         />
                     </div>
                     <div className="px-2 md:px-0 flex mt-4">
-                        {(variantInfoMap[selectedVariantKey]["media"] || product["media"] || []).map((media, idx) => (
+                        {variantInfoMap[selectedVariantKey]["media"].map((media, idx) => (
                             <img
                                 key={idx}
                                 src={media.url}
