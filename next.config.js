@@ -19,7 +19,6 @@ module.exports = {
                     },
                 ],
             },
-
             {
                 source: "/checkout/(.*)",
                 headers: [{ key: "x-frame-options", value: "ALLOWALL" }],
@@ -29,7 +28,7 @@ module.exports = {
   async rewrites() {
       return [
           {
-              source: '/checkout/',
+              source: '/checkout',
               destination: 'https://checkout.eminstore.com/checkout-spa/',
           },
       ];
