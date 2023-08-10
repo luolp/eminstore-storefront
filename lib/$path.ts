@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { OptionalQuery as OptionalQuery0 } from "../pages/[channel]/[locale]/account/login";
 import type { OptionalQuery as OptionalQuery1 } from "../pages/[channel]/[locale]/products/[slug]";
 

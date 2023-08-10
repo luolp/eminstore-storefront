@@ -6,13 +6,10 @@ import Header from "../components/header";
 import { selectItems } from "../slices/basketSlice";
 import nookies from "nookies";
 import Head from "next/head";
-import { loadStripe } from "@stripe/stripe-js";
-import axios from "axios";
 import { useRouter } from "next/dist/client/router";
 import {PriceFragment, useCreateCheckoutMutation} from "@/saleor/api";
 import {useRegions} from "@/components/RegionsProvider";
 import {useUser} from "@/lib/useUser";
-const stripePromise = loadStripe(process.env.publishableKey);
 
 function Basket() {
   const router = useRouter();
@@ -70,7 +67,7 @@ function Basket() {
   };
 
     // 计算单个商品总价格
-    const calculateProductTotalPrice = (price?: PriceFragment, quantity: number) => {
+    const calculateProductTotalPrice = (quantity: number, price?: PriceFragment) => {
         if (!price) {
             return '';
         }
@@ -88,7 +85,7 @@ function Basket() {
     };
     const calculateCartTotalPriceStr = () => {
         if (!items || items.length === 0) {
-            return formatPrice({ amount: 0 });
+            return formatPrice({ amount: 0 } as PriceFragment);
         }
 
         return formatPrice({ ...items[0].pricing?.price?.gross, amount: calculateCartTotalPrice() });
@@ -144,10 +141,9 @@ function Basket() {
                     {items.length === 0 && (
                       <div className="text-gray-400 text-sm mb-10">
                         <img
-                          className="md:w-1/3 object-cover w-full"
-                          src="https://i.ibb.co/hWZhd6F/empty-cart-4a7779da-Convert-Image.png"
+                          className="md:w-1/3 object-cover w-full mx-auto"
+                          src="\empty-cart.png"
                           alt=""
-                          className="mx-auto"
                         />
                         <p className="text-center">
                           Your basket is empty,

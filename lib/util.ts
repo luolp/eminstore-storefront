@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DataProp } from "editorjs-blocks-react-renderer";
 
 import { DEFAULT_LOCALE } from "@/lib/regions";

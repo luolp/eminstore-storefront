@@ -25,7 +25,7 @@ function Product({ product, dataAlso, variantSKU }) {
 
     const variants = product.variants || [];
     // variantMap = {“Color”:["Black","Blue"],"Size":[ "A5"], "Style":["Ruled","Dotted"]}
-    const variantMap = variants.reduce((acc, variant) => {
+    const variantMap : Record<string, string[]> = variants.reduce((acc, variant) => {
         variant.selectionAttributes.forEach((attribute) => {
             const attributeName = attribute.attribute.name;
             const attributeValue = attribute.values[0].name;
@@ -165,13 +165,15 @@ function Product({ product, dataAlso, variantSKU }) {
                         <img
                             // className=" h-60 object-cover w-full md:rounded-2xl"
                             className=" object-cover w-full md:rounded-2xl cursor-pointer"
-                            src={variantInfoMap[selectedVariantKey]["media"][imgSelected].url}
+                            src={
+                                (variantInfoMap[selectedVariantKey]["media"] || product["media"])?.[imgSelected]?.url || ''
+                            }
                             alt=""
                             onClick={handleImageClick}
                         />
                     </div>
                     <div className="px-2 md:px-0 flex mt-4">
-                        {variantInfoMap[selectedVariantKey]["media"].map((media, idx) => (
+                        {(variantInfoMap[selectedVariantKey]["media"] || product["media"] || []).map((media, idx) => (
                             <img
                                 key={idx}
                                 src={media.url}

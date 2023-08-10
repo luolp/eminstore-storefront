@@ -2,12 +2,18 @@ import React from "react";
 import { useState } from "react";
 import Router from "next/router";
 import { ApolloQueryResult } from "@apollo/client";
-import {ProductCollectionDocument, ProductCollectionQuery, ProductFilterInput} from "@/saleor/api";
+import {
+    ProductCardFragment,
+    ProductCollectionDocument,
+    ProductCollectionQuery,
+    ProductFilterInput
+} from "@/saleor/api";
 import {serverApolloClient} from "@/lib/auth/useAuthenticatedApolloClient";
 
 function Search() {
   // const [input, setInput] = useState("");
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
+    const [data, setData] = useState<ProductCardFragment[]>([]);
   // const [debouncedFilter, setDebouncedFilter] = React.useState<ProductFilterInput>({});
   const handleChange = async (e) => {
       let debouncedFilter = {};

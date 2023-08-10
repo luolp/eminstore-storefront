@@ -6,8 +6,9 @@ import Router from "next/router";
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../slices/wishlistSlice";
 import { useRegions } from "./RegionsProvider";
+import {ProductCardFragment} from "@/saleor/api";
 
-function ProductCard({ item }) {
+function ProductCard({ item }: { item: ProductCardFragment }) {
   const thumbnailUrl = item.thumbnail?.url;
   const dispatch = useDispatch();
   const { formatPrice } = useRegions();
@@ -20,6 +21,7 @@ function ProductCard({ item }) {
           animate={{ scale: 1, x: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
+            {thumbnailUrl !== undefined && (
           <Image
             height={700}
             width={700}
@@ -30,6 +32,7 @@ function ProductCard({ item }) {
             alt=""
             className="rounded-xl w-full h-full bg-cusgray"
           />
+            )}
         </motion.div>
         <div className="hidden absolute rounded-xl h-full w-full bg-gray-500 backdrop-filter backdrop-blur-sm bg-opacity-30 top-0 group group-hover:flex justify-center place-items-center z-10">
           <div className="flex overflow-hidden cursor-pointer">
@@ -60,7 +63,7 @@ function ProductCard({ item }) {
         className="px-2 py-2"
       >
         <p className="text-sm line-clamp-1">{item.name}</p>
-        <p className="text-xs my-2 text-gray-400">{item.category.name}</p>
+        <p className="text-xs my-2 text-gray-400">{item.category?.name}</p>
 
          <p className="text-sm font-semibold">{formatPrice(item.pricing?.priceRange?.start?.gross)}</p>
         {/*<NumberFormat*/}
