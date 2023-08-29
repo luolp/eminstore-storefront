@@ -7,9 +7,18 @@ import { selectItems } from "../slices/basketSlice";
 import nookies from "nookies";
 import Head from "next/head";
 import { useRouter } from "next/dist/client/router";
-import {PriceFragment, useCreateCheckoutMutation} from "@/saleor/api";
+import {PriceFragment,
+    useCreateCheckoutMutation,
+    useCheckoutShippingAddressUpdateMutation,
+    useCheckoutEmailUpdateMutation,
+    useOrderCreateMutation,
+    useCheckoutShippingMethodUpdateMutation} from "@/saleor/api";
 import {useRegions} from "@/components/RegionsProvider";
 import {useUser} from "@/lib/useUser";
+import Decimal from 'decimal.js';
+// PayPal
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+const CLIENT_ID = process.env.PAYPAL_CLIENT_ID || "";
 
 function Basket() {
   const router = useRouter();
@@ -20,6 +29,10 @@ function Basket() {
   const [cookie, setCookie] = useState({});
 
     const [createCheckout] = useCreateCheckoutMutation();
+    const [updateCheckoutShippingMethod] = useCheckoutShippingMethodUpdateMutation();
+    const [updateCheckoutEmail] = useCheckoutEmailUpdateMutation();
+    const [updateCheckoutShippingAddress] = useCheckoutShippingAddressUpdateMutation();
+    const [createOrder] = useOrderCreateMutation();
     const { user } = useUser();
 
   useEffect(() => {
@@ -36,7 +49,7 @@ function Basket() {
         setItems(tempItems);
     }, [tempItems]);
 
-  const createCheckoutSession = async () => {
+  const createCheckoutSession2 = async () => {
     setLoading(true);
 
       const lines = items.map(item => ({
@@ -51,7 +64,6 @@ function Basket() {
               lines: lines,
           },
       });
-      console.log(JSON.stringify(createCheckoutData));
 
     const errorMessages = createCheckoutData?.checkoutCreate?.errors.map((e) => e.message || "") || [];
     if (errorMessages.length === 0) {
@@ -66,12 +78,116 @@ function Basket() {
     }
   };
 
+    let checkoutId = null;
+    let checkoutToken = null;
+    const createCheckoutSession = async () => {
+        const lines = items.map(item => ({
+            quantity: item.quantity,
+            variantId: item.id,
+        }));
+
+        const { data: createCheckoutData } = await createCheckout({
+            variables: {
+                email: user?.email,
+                channel: currentChannel.slug,
+                lines: lines,
+            },
+        });
+
+        const errorMessages = createCheckoutData?.checkoutCreate?.errors.map((e) => e.message || "") || [];
+        if (errorMessages.length > 0) {
+            alert(errorMessages.join("\n"));
+        }
+        checkoutId = createCheckoutData?.checkoutCreate?.checkout?.id;
+        checkoutToken = createCheckoutData?.checkoutCreate?.checkout?.token;
+    };
+
+    // 更新checkout的送货方式
+    const updateCheckoutShippingMethodSession = async () => {
+        // U2hpcHBpbmdNZXRob2Q6Mg== 是0元
+        // U2hpcHBpbmdNZXRob2Q6MQ== 是8元
+        let methodId = "U2hpcHBpbmdNZXRob2Q6MQ==";
+        if (getRemainingAmountForFreeShipping() === 0) {
+            methodId = "U2hpcHBpbmdNZXRob2Q6Mg==";
+        }
+
+        const { data } = await updateCheckoutShippingMethod({
+            variables: {
+                token: checkoutToken,
+                shippingMethodId: methodId,
+                locale: 'EN_US',
+            },
+        });
+        if (data?.checkoutShippingMethodUpdate?.errors.length) {
+            console.log(data?.checkoutShippingMethodUpdate?.errors);
+            return false;
+        }
+        return true;
+    };
+
+    // 更新checkout的收货地址
+    const updateCheckoutShippingAddressSession = async (shippingInfo) => {
+        const { data } = await updateCheckoutShippingAddress({
+            variables: {
+                address: {
+                    firstName: shippingInfo?.name?.full_name?.split(' ')[0] || "",
+                    lastName: shippingInfo?.name?.full_name?.split(' ')[1] || "",
+                    phone: "", // 无
+                    country: shippingInfo?.address?.country_code || "US",
+                    countryArea: shippingInfo?.address?.admin_area_1 || "",
+                    city: shippingInfo?.address?.admin_area_2 || "",
+                    streetAddress1: shippingInfo?.address?.address_line_1 || "",
+                    postalCode: shippingInfo?.address?.postal_code || "",
+                },
+                token: checkoutToken,
+                locale: 'EN_US',
+            },
+        });
+        if (data?.checkoutShippingAddressUpdate?.errors.length) {
+            console.log(data?.checkoutShippingAddressUpdate?.errors);
+            return false;
+        }
+        return true;
+    };
+
+    // 更新checkout的邮箱
+    const updateCheckoutEmailSession = async (email) => {
+        const { data } = await updateCheckoutEmail({
+            variables: {
+                email: email,
+                token: checkoutToken,
+                locale: 'EN_US',
+            },
+        });
+        if (data?.checkoutEmailUpdate?.errors.length) {
+            console.log(data?.checkoutEmailUpdate?.errors);
+            return false;
+        }
+        return true;
+    };
+
+    // 新建订单
+    const createOrderSession = async () => {
+        const { data } = await createOrder({
+            variables: {
+                id: checkoutId,
+            },
+        });
+        if (data?.orderCreateFromCheckout?.errors.length) {
+            console.log(data?.orderCreateFromCheckout?.errors);
+            return null;
+        }
+        console.log(data);
+        return data?.orderCreateFromCheckout?.order;
+    };
+
+
     // 计算单个商品总价格
-    const calculateProductTotalPrice = (quantity: number, price?: PriceFragment) => {
+    const calculateProductTotalPrice = (price?: PriceFragment, quantity: number) => {
         if (!price) {
             return '';
         }
-        const totalPrice = (price.amount || 0) * quantity;
+        let totalPrice = (price.amount || 0) * quantity;
         return formatPrice({ ...price, amount: totalPrice });
     };
 
@@ -90,18 +206,40 @@ function Basket() {
 
         return formatPrice({ ...items[0].pricing?.price?.gross, amount: calculateCartTotalPrice() });
     };
-
-    const freeShippingThreshold = 49.0;
-    const getRemainingAmountForFreeShipping = () => {
+    // 计算购物车中所有商品+税+运费的总价格
+    const calculateCartTotalPrice2 = () => {
         let totalPrice = 0;
         for (const item of items) {
             totalPrice += (item.pricing?.price?.gross?.amount || 0) * item.quantity;
         }
-        if (totalPrice >= freeShippingThreshold) {
-            return 0;
-        } else {
-            return freeShippingThreshold - totalPrice;
+        // 如果不满免运费
+        if (totalPrice < freeShippingThreshold) {
+            totalPrice += shippingCost;
         }
+        return totalPrice;
+    };
+    const calculateCartTotalPriceStr2 = () => {
+        if (!items || items.length === 0) {
+            return formatPrice({ amount: 0 } as PriceFragment);
+        }
+
+        return formatPrice({ ...items[0].pricing?.price?.gross, amount: calculateCartTotalPrice2() });
+    };
+
+    // TODO ... 这些变量需要从后台查出
+    const freeShippingThreshold = 49.0; // 满多少免运费
+    const shippingCost = 8.0; // 不免运费时的运费
+
+    const getRemainingAmountForFreeShipping = () => {
+        let totalPrice = new Decimal(0);
+        for (const item of items) {
+            totalPrice = totalPrice.plus(
+                new Decimal(item.pricing?.price?.gross?.amount || 0).times(item.quantity)
+            );
+        }
+
+        const remainingAmount = new Decimal(freeShippingThreshold).minus(totalPrice);
+        return remainingAmount.greaterThanOrEqualTo(0) ? remainingAmount.toNumber() : 0;
     };
 
     const [promoCode, setPromoCode] = useState('');
@@ -123,7 +261,7 @@ function Basket() {
               <div className="">
                 <div className="shadow-lg rounded-xl bg-cusblack text-white px-5 py-3">
                   <h1 className="font-semibold text-lg md:text-xl mb-1">
-                      {calculateCartTotalPrice() >= freeShippingThreshold
+                      {getRemainingAmountForFreeShipping() == 0
                           ? "Your order qualifies for FREE SHIPPING"
                           : `Order for an additional $${getRemainingAmountForFreeShipping()} to receive FREE SHIPPING`}
                   </h1>
@@ -187,49 +325,162 @@ function Basket() {
                       />
                   </div>
 
-                <div className="text-sm pt-1 font-semibold pb-2 border-b border-cusblack flex justify-between place-items-center">
+                <div className="text-sm pt-1 font-semibold pb-2 border-b flex justify-between place-items-center">
                     <p className="">SUBTOTAL</p>
                     <p className="font-semibold text-right text-cusblack">{ calculateCartTotalPriceStr() }</p>
                 </div>
 
-                <div className="my-3 border-b border-cusblack pb-2">
+                <div className="my-3 border-b pb-2">
                     {items.map((item, idx) => (
                         <div
                             key={idx}
                             className="flex justify-between place-items-center text-sm mb-1"
                         >
                             <p className="pr-3">{item.productName}{item.productVariantCount > 1 ? `（${item.name}）` : ''}</p>
-                            <p className="font-semibold text-right text-cusblack">{ calculateProductTotalPrice(item.pricing?.price?.gross, item.quantity) }</p>
+                            <p className="text-right text-cusblack">{ calculateProductTotalPrice(item.pricing?.price?.gross, item.quantity) }</p>
                         </div>
                     ))}
-                    <div className="flex justify-between place-items-center text-sm mb-1">
-                        <p>TAX</p>
-                        <p>FREE</p>
-                    </div>
                 </div>
 
-                <div className="flex justify-between place-items-center font-semibold">
+                  <div className="my-3 border-b border-cusblack pb-2 font-semibold">
+                      <div className="flex justify-between place-items-center text-sm mb-1">
+                          <p>SHIPPING COST</p>
+                          {getRemainingAmountForFreeShipping() === 0 ? (
+                              <p className="text-right text-cusblack">FREE</p>
+                          ) : (
+                              <p className="font-semibold text-right text-cusblack">{formatPrice({ amount: shippingCost } as PriceFragment)}</p>
+                          )}
+                      </div>
+                      <div className="flex justify-between place-items-center text-sm mb-1">
+                          <p>TAX</p>
+                          <p className="text-right text-cusblack">FREE</p>
+                      </div>
+                  </div>
+                <div className="flex justify-between place-items-center font-semibold mb-4">
                     <p>TOTAL</p>
-                    <p className="font-semibold text-right text-cusblack">{ calculateCartTotalPriceStr() }</p>
+                    <p className="font-semibold text-right text-cusblack">{ calculateCartTotalPriceStr2() }</p>
                 </div>
 
-                <button
-                  disabled={!items.length}
-                  onClick={createCheckoutSession}
-                  className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-cusblack "
-                >
-                  {!loading ? (
-                    <span className="flex justify-center place-items-center">
-                      CHECKOUT
-                    </span>
-                  ) : (
-                    <img
-                      className="w-6 h-6 mx-auto"
-                      src="/Rolling-1s-200px-2.gif"
-                      alt=""
-                    />
-                  )}
-                </button>
+                {/*<button*/}
+                  {/*disabled={!items.length}*/}
+                  {/*onClick={createCheckoutSession}*/}
+                  {/*className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-cusblack "*/}
+                {/*>*/}
+                  {/*{!loading ? (*/}
+                    {/*<span className="flex justify-center place-items-center">*/}
+                      {/*CHECKOUT*/}
+                    {/*</span>*/}
+                  {/*) : (*/}
+                    {/*<img*/}
+                      {/*className="w-6 h-6 mx-auto"*/}
+                      {/*src="/Rolling-1s-200px-2.gif"*/}
+                      {/*alt=""*/}
+                    {/*/>*/}
+                  {/*)}*/}
+                {/*</button>*/}
+
+                  {/* PayPal Express Checkout */}
+                  <PayPalButtons
+                      data-page-type="cart"
+                      style={{ color: "blue", label: "checkout" }}
+                      onClick={(data, actions) => {
+                          // 点击按钮逻辑
+                          // 1.创建checkout
+                          createCheckoutSession(); // 创建checkout
+                          if (checkoutId === null || checkoutToken === null) {
+                              alert("Network error. Please try again."); // 提示网络异常
+                              return actions.reject(); // 关闭
+                          }
+                          // 2.更新快递方式
+                          if (!updateCheckoutShippingMethodSession()) {
+                              return actions.reject(); // 关闭
+                          }
+                          console.log("onClick data:", data);
+                          console.log("onClick actions:", actions);
+                      }}
+                      createOrder={(data, actions) => {
+                          return actions.order.create({
+                              purchase_units: [
+                                  {
+                                      amount: {
+                                          currency_code: "USD",
+                                          value: "5.00",
+                                          breakdown: {
+                                              item_total: {
+                                                  currency_code: 'USD',
+                                                  value: "3.00",
+                                              },
+                                              shipping: {
+                                                  currency_code: 'USD',
+                                                  value: "2.00",
+                                              },
+                                          }
+                                      },
+                                      items: [
+                                          {
+                                              name: "Product 1",
+                                              quantity: "1",
+                                              unit_amount: {
+                                                  currency_code: "USD",
+                                                  value: "1.00",
+                                              },
+                                          },
+                                          {
+                                              name: "Product 2",
+                                              quantity: "2",
+                                              unit_amount: {
+                                                  currency_code: "USD",
+                                                  value: "1.00",
+                                              },
+                                          },
+                                      ],
+                                  },
+                              ],
+                          });
+                      }}
+                      onApprove={async (data, actions) => {
+                          // 该方法被调用，说明用户已经在 PayPal 上成功完成了支付，并且支付订单已被批准
+                          // 1.查询支付信息（为了获取到收货地址）
+                          const details = await actions.order.capture();
+                          // 2.更新checkout
+                          // 2.1.更新送货地址
+                          const shippingInfo = details?.purchase_units[0]?.shipping;
+                          updateCheckoutShippingAddressSession(shippingInfo);
+                          // 2.2.更新checkout的email（因为要发邮件给买家，所以这很重要）
+                          updateCheckoutEmailSession(details?.payer?.email_address || "");
+                          // 3.创建订单
+                          const orderData = createOrderSession();
+                          // TODO .. (暂缓) 4.更新订单状态
+
+                          // 5.跳转至订单详情页面
+                          // Construct the URL with the orderId and other parameters
+                          const orderId = orderData.id;
+                          const baseUrl = '/checkout/';
+                          const domain = 'www.eminstore.com';
+                          const locale = 'en-US';
+                          const saleorApiUrl = encodeURIComponent('https://data.eminstore.com/graphql/');
+
+                          // Perform the page redirection
+                          window.location.href = `${baseUrl}?domain=${domain}&locale=${locale}&order=${orderId}&saleorApiUrl=${saleorApiUrl}`;
+                      }}
+                      onError={(error) => {
+                          console.log("PayPal error:", error);
+                      }}
+                      onCancel={(data) => {
+                          // 取消支付逻辑
+                          console.log("onCancel data:", data);
+                      }}
+                      onShippingChange={(data, actions) => {
+                          // 送货地址变更逻辑
+                          console.log("onShippingChange data:", data);
+                          // 限定送货地址为美国
+                          if (data.shipping_address.country_code !== 'US') {
+                              return actions.reject(); // 向PayPal表示您将不支持买家提供的送货地址。
+                          }
+                          return actions.resolve(); // 向PayPal表示您不需要对买家的购物车进行任何更改。
+                      }}
+                  />
+
               </div>
             </div>
           </div>
