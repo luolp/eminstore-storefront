@@ -446,9 +446,7 @@ function Basket() {
                           // 2.2.更新checkout的email（因为要发邮件给买家，所以这很重要）
                           await updateCheckoutEmailSession(details?.payer?.email_address || "");
                           // 2.3.更新快递方式
-                          if (!await updateCheckoutShippingMethodSession()) {
-                              return actions.reject(); // 关闭
-                          }
+                          await updateCheckoutShippingMethodSession();
                           // 3.创建订单
                           const orderData = await createOrderSession();
                           console.log(orderData);
