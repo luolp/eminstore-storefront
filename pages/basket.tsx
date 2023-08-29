@@ -392,10 +392,6 @@ function Basket() {
                               alert("Network error. Please try again."); // 提示网络异常
                               return actions.reject(); // 关闭
                           }
-                          // 2.更新快递方式
-                          if (!await updateCheckoutShippingMethodSession()) {
-                              return actions.reject(); // 关闭
-                          }
                           console.log("onClick data:", data);
                           console.log("onClick actions:", actions);
                       }}
@@ -449,8 +445,13 @@ function Basket() {
                           await updateCheckoutShippingAddressSession(shippingInfo);
                           // 2.2.更新checkout的email（因为要发邮件给买家，所以这很重要）
                           await updateCheckoutEmailSession(details?.payer?.email_address || "");
+                          // 2.3.更新快递方式
+                          if (!await updateCheckoutShippingMethodSession()) {
+                              return actions.reject(); // 关闭
+                          }
                           // 3.创建订单
                           const orderData = await createOrderSession();
+                          console.log(orderData);
                           // TODO .. (暂缓) 4.更新订单状态
 
                           // 5.跳转至订单详情页面
