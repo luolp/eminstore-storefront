@@ -363,7 +363,7 @@ function Basket() {
 
                 {/*<button*/}
                   {/*disabled={!items.length}*/}
-                  {/*onClick={createCheckoutSession}*/}
+                  {/*onClick={createCheckoutSession2}*/}
                   {/*className="py-2 px-3 disabled:cursor-not-allowed text-white w-full mt-6 rounded-lg bg-cusblack "*/}
                 {/*>*/}
                   {/*{!loading ? (*/}
@@ -380,6 +380,7 @@ function Basket() {
                 {/*</button>*/}
 
                   {/* PayPal Express Checkout */}
+                  {items.length > 0 && (
                   <PayPalButtons
                       data-page-type="cart"
                       style={{ color: "blue", label: "checkout" }}
@@ -480,7 +481,7 @@ function Basket() {
                           return actions.resolve(); // 向PayPal表示您不需要对买家的购物车进行任何更改。
                       }}
                   />
-
+                  )}
               </div>
             </div>
           </div>
