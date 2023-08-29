@@ -27,24 +27,25 @@ module.exports = {
             },
         ];
     },
-  async rewrites() {
-      return [
-          {
-              source: '/checkout',
-              destination: 'https://checkout.eminstore.com/checkout-spa/',
-          },
-          {
-              source: `${checkoutEmbededInStorefrontPath}/`,
-              destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
-          },
-          {
-              source: `${checkoutEmbededInStorefrontPath}/:path*/`,
-              destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*/`,
-          },
-          {
-              source: `${checkoutEmbededInStorefrontPath}/:path*`,
-              destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
-          },
-      ];
-  },
+    trailingSlash: true,
+      async rewrites() {
+          return [
+              {
+                  source: '/checkout/',
+                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/checkout-spa/`,
+              },
+              {
+                  source: `${checkoutEmbededInStorefrontPath}/`,
+                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
+              },
+              {
+                  source: `${checkoutEmbededInStorefrontPath}/:path*/`,
+                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*/`,
+              },
+              {
+                  source: `${checkoutEmbededInStorefrontPath}/:path*`,
+                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
+              }
+          ];
+      },
 };
