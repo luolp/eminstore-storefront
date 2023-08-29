@@ -39,7 +39,9 @@
     "react-responsive-carousel": "^3.2.20",
     "webpack": "^5.84.1",
     "@babel/core": "^7.0.1",
-    "stripe": "^8.172.0"
+    "stripe": "^8.172.0",
+    "decimal.js": "^10.4.3",
+    "@paypal/react-paypal-js": "^7.6.0"
   },
   "devDependencies": {
     "@formatjs/cli": "5.1.3",

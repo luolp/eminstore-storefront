@@ -7,7 +7,7 @@ import { RegionsProvider } from "@/components/RegionsProvider";
 import { useAuthenticatedApolloClient } from "@/lib/auth/useAuthenticatedApolloClient";
 import { SaleorAuthProvider, useAuthChange, useSaleorAuthClient } from "@/lib/auth";
 import { CheckoutProvider } from "@/lib/providers/CheckoutProvider";
-import { API_URI, DEMO_MODE } from "@/lib/const";
+import { API_URI, CLIENT_ID } from "@/lib/const";
 import { store } from "../app/store";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
@@ -16,6 +16,8 @@ NProgress.configure({ showSpinner: false });
 Router.events.on("routeChangeStart", () => NProgress.start());
 Router.events.on("routeChangeComplete", () => NProgress.done());
 Router.events.on("routeChangeError", () => NProgress.done());
+// PayPal
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 function MyApp({ Component, pageProps }) {
 
@@ -34,6 +36,7 @@ function MyApp({ Component, pageProps }) {
       <AnimatePresence>
           <SaleorAuthProvider {...useSaleorAuthClientProps}>
               <ApolloProvider client={apolloClient}>
+                  <PayPalScriptProvider options={{ "client-id": "AZWL-t91AurMPc_QJNIDXGX7klRDTtsQe1G7CegWplWlJ0fhZmmhGkRhh8oALtJ-q1GMQcn0knYh03c0" }}>
                   <CheckoutProvider>
                       <RegionsProvider>
                           <Provider store={store}>
@@ -41,6 +44,7 @@ function MyApp({ Component, pageProps }) {
                           </Provider>
                       </RegionsProvider>
                   </CheckoutProvider>
+                  </PayPalScriptProvider>
               </ApolloProvider>
           </SaleorAuthProvider>
       </AnimatePresence>

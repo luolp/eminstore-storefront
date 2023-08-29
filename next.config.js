@@ -1,51 +1,41 @@
-const checkoutEmbededInStorefrontPath = "/saleor-app-checkout";
+const withPlugins = require("next-compose-plugins");
+const { PHASE_DEVELOPMENT_SERVER } = require("next/constants");
+const withOptimizedImages = require("next-optimized-images");
+const withTM = require("next-transpile-modules")(["register-service-worker"]);
 
-module.exports = {
-  images: {
-    domains: ["data.eminstore.com"],
-  },
+const withServiceWorkerConfig = require("./config/next/config.serviceWorker");
+const withBaseConfig = require("./config/next/config.base");
+const withDevConfig = require("./config/next/config.dev");
+const withProdConfig = require("./config/next/config.prod");
+
+module.exports = withPlugins(
+  [
+    [withOptimizedImages, { handleImages: ["jpeg", "png", "webp", "gif"] }],
+    withTM,
+    withBaseConfig,
+    withServiceWorkerConfig,
+    [withDevConfig, {}, [PHASE_DEVELOPMENT_SERVER]],
+    [withProdConfig, {}, ["!" + PHASE_DEVELOPMENT_SERVER]],
+  ],
+  {
     async headers() {
-        return [
+      return [
+        {
+          source: "/(.*)",
+          headers: [
             {
-                source: "/(.*)",
-                headers: [
-                    {
-                        key: "x-content-type-options",
-                        value: "nosniff",
-                    },
-                    { key: "x-xss-protection", value: "1" },
-                    { key: "x-frame-options", value: "DENY" },
-                    {
-                        key: "strict-transport-security",
-                        value: "max-age=31536000; includeSubDomains",
-                    },
-                ],
+              key: "x-content-type-options",
+              value: "nosniff",
             },
+            { key: "x-xss-protection", value: "1" },
+            { key: "x-frame-options", value: "DENY" },
             {
-                source: "/checkout/(.*)",
-                headers: [{ key: "x-frame-options", value: "ALLOWALL" }],
+              key: "strict-transport-security",
+              value: "max-age=31536000; includeSubDomains",
             },
-        ];
+          ],
+        },
+      ];
     },
-    trailingSlash: true,
-      async rewrites() {
-          return [
-              {
-                  source: '/checkout/',
-                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/checkout-spa/`,
-              },
-              {
-                  source: `${checkoutEmbededInStorefrontPath}/`,
-                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/`,
-              },
-              {
-                  source: `${checkoutEmbededInStorefrontPath}/:path*/`,
-                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*/`,
-              },
-              {
-                  source: `${checkoutEmbededInStorefrontPath}/:path*`,
-                  destination: `${process.env.NEXT_PUBLIC_CHECKOUT_APP_URL}/:path*`,
-              }
-          ];
-      },
-};
+  }
+);
