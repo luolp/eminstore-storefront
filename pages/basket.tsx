@@ -183,7 +183,7 @@ function Basket() {
 
 
     // 计算单个商品总价格
-    const calculateProductTotalPrice = (price?: PriceFragment, quantity: number) => {
+    const calculateProductTotalPrice = (quantity: number, price?: PriceFragment) => {
         if (!price) {
             return '';
         }
@@ -337,7 +337,7 @@ function Basket() {
                             className="flex justify-between place-items-center text-sm mb-1"
                         >
                             <p className="pr-3">{item.productName}{item.productVariantCount > 1 ? `（${item.name}）` : ''}</p>
-                            <p className="text-right text-cusblack">{ calculateProductTotalPrice(item.pricing?.price?.gross, item.quantity) }</p>
+                            <p className="text-right text-cusblack">{ calculateProductTotalPrice(item.quantity, item.pricing?.price?.gross) }</p>
                         </div>
                     ))}
                 </div>
@@ -383,16 +383,16 @@ function Basket() {
                   <PayPalButtons
                       data-page-type="cart"
                       style={{ color: "blue", label: "checkout" }}
-                      onClick={(data, actions) => {
+                      onClick={async (data, actions) => {
                           // 点击按钮逻辑
                           // 1.创建checkout
-                          createCheckoutSession(); // 创建checkout
+                          await createCheckoutSession(); // 创建checkout
                           if (checkoutId === null || checkoutToken === null) {
                               alert("Network error. Please try again."); // 提示网络异常
                               return actions.reject(); // 关闭
                           }
                           // 2.更新快递方式
-                          if (!updateCheckoutShippingMethodSession()) {
+                          if (!await updateCheckoutShippingMethodSession()) {
                               return actions.reject(); // 关闭
                           }
                           console.log("onClick data:", data);
@@ -445,11 +445,11 @@ function Basket() {
                           // 2.更新checkout
                           // 2.1.更新送货地址
                           const shippingInfo = details?.purchase_units[0]?.shipping;
-                          updateCheckoutShippingAddressSession(shippingInfo);
+                          await updateCheckoutShippingAddressSession(shippingInfo);
                           // 2.2.更新checkout的email（因为要发邮件给买家，所以这很重要）
-                          updateCheckoutEmailSession(details?.payer?.email_address || "");
+                          await updateCheckoutEmailSession(details?.payer?.email_address || "");
                           // 3.创建订单
-                          const orderData = createOrderSession();
+                          const orderData = await createOrderSession();
                           // TODO .. (暂缓) 4.更新订单状态
 
                           // 5.跳转至订单详情页面
