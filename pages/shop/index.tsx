@@ -49,7 +49,6 @@ export async function getStaticProps() {
         });
     const productEdges = productResult.data?.products?.edges || [];
     const dataItems = productEdges.map((edge) => edge.node);
-console.log(JSON.stringify(dataItems));
   return {
     props: {
         data,
