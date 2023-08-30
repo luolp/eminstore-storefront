@@ -34,6 +34,7 @@ function Basket() {
     const [updateCheckoutShippingAddress] = useCheckoutShippingAddressUpdateMutation();
     const [createOrder] = useOrderCreateMutation();
     const { user } = useUser();
+    let currentItems = [];
 
   useEffect(() => {
     const dataCookie = nookies.get();
@@ -48,6 +49,10 @@ function Basket() {
     useEffect(() => {
         setItems(tempItems);
     }, [tempItems]);
+
+    useEffect(() => {
+        currentItems = items;
+    }, [items]);
 
   const createCheckoutSession2 = async () => {
     setLoading(true);
@@ -80,11 +85,13 @@ function Basket() {
 
     let checkoutId = null;
     let checkoutToken = null;
-    const createCheckoutSession = async (lines) => {
-        console.log("lines:");
-        console.log(lines);
-        console.log("items:");
-        console.log(items);
+    const createCheckoutSession = async () => {
+        console.log("currentItems=");
+        console.log(currentItems);
+        const lines = currentItems.map(item => ({
+            quantity: item.quantity,
+            variantId: item.id,
+        }));
 
         const { data: createCheckoutData } = await createCheckout({
             variables: {
@@ -387,15 +394,7 @@ function Basket() {
                       onClick={async (data, actions) => {
                           // 点击按钮逻辑
                           // 1.创建checkout
-                          console.log("items====");
-                          console.log(items);
-                          const lines = items.map(item => ({
-                              quantity: item.quantity,
-                              variantId: item.id,
-                          }));
-                          console.log("lines====");
-                          console.log(lines);
-                          await createCheckoutSession(lines); // 创建checkout
+                          await createCheckoutSession(); // 创建checkout
                           if (checkoutId === null || checkoutToken === null) {
                               alert("Network error. Please try again."); // 提示网络异常
                               return actions.reject(); // 关闭
