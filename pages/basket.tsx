@@ -80,7 +80,7 @@ function Basket() {
 
     let checkoutId = null;
     let checkoutToken = null;
-    const createCheckoutSession = async () => {
+    const createCheckoutSession = async (items) => {
         const lines = items.map(item => ({
             quantity: item.quantity,
             variantId: item.id,
@@ -387,7 +387,7 @@ function Basket() {
                       onClick={async (data, actions) => {
                           // 点击按钮逻辑
                           // 1.创建checkout
-                          await createCheckoutSession(); // 创建checkout
+                          await createCheckoutSession(items); // 创建checkout
                           if (checkoutId === null || checkoutToken === null) {
                               alert("Network error. Please try again."); // 提示网络异常
                               return actions.reject(); // 关闭
