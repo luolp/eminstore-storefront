@@ -80,8 +80,12 @@ function Basket() {
 
     let checkoutId = null;
     let checkoutToken = null;
-    const createCheckoutSession = async (items) => {
-        const lines = items.map(item => ({
+    const createCheckoutSession = async (currentItems) => {
+        console.log("currentItems:");
+        console.log(currentItems);
+        console.log("items:");
+        console.log(items);
+        const lines = currentItems.map(item => ({
             quantity: item.quantity,
             variantId: item.id,
         }));
