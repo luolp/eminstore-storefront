@@ -25,6 +25,7 @@ function Basket() {
   const { formatPrice, currentChannel } = useRegions();
   const tempItems = useSelector(selectItems);
   const [items, setItems] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
   const [loading, setLoading] = useState(false);
   const [cookie, setCookie] = useState({});
 
@@ -34,7 +35,6 @@ function Basket() {
     const [updateCheckoutShippingAddress] = useCheckoutShippingAddressUpdateMutation();
     const [createOrder] = useOrderCreateMutation();
     const { user } = useUser();
-    let currentItems = [];
 
   useEffect(() => {
     const dataCookie = nookies.get();
@@ -49,9 +49,9 @@ function Basket() {
     useEffect(() => {
         setItems(tempItems);
     }, [tempItems]);
-
     useEffect(() => {
-        currentItems = items;
+        const sumQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+        setTotalQuantity(sumQuantity);
     }, [items]);
 
   const createCheckoutSession2 = async () => {
@@ -86,9 +86,10 @@ function Basket() {
     let checkoutId = null;
     let checkoutToken = null;
     const createCheckoutSession = async () => {
-        console.log("currentItems=");
-        console.log(currentItems);
-        const lines = currentItems.map(item => ({
+        console.log("items2222=");
+        console.log(items);
+        console.log(totalQuantity);
+        const lines = items.map(item => ({
             quantity: item.quantity,
             variantId: item.id,
         }));
@@ -389,9 +390,13 @@ function Basket() {
                   {/* PayPal Express Checkout */}
                   {items.length > 0 && (
                   <PayPalButtons
+                      data-quantity={totalQuantity}
                       data-page-type="cart"
                       style={{ color: "blue", label: "checkout" }}
                       onClick={async (data, actions) => {
+                          console.log("items111111=");
+                          console.log(items);
+                          console.log(totalQuantity);
                           // 点击按钮逻辑
                           // 1.创建checkout
                           await createCheckoutSession(); // 创建checkout
