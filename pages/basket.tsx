@@ -25,7 +25,6 @@ function Basket() {
   const { formatPrice, currentChannel } = useRegions();
   const tempItems = useSelector(selectItems);
   const [items, setItems] = useState([]);
-  const [totalQuantity, setTotalQuantity] = useState(0);
   const [loading, setLoading] = useState(false);
   const [cookie, setCookie] = useState({});
 
@@ -35,6 +34,8 @@ function Basket() {
     const [updateCheckoutShippingAddress] = useCheckoutShippingAddressUpdateMutation();
     const [createOrder] = useOrderCreateMutation();
     const { user } = useUser();
+
+    const paypalTriggerBtnRef = React.useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const dataCookie = nookies.get();
@@ -49,10 +50,6 @@ function Basket() {
     useEffect(() => {
         setItems(tempItems);
     }, [tempItems]);
-    useEffect(() => {
-        const sumQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-        setTotalQuantity(sumQuantity);
-    }, [items]);
 
   const createCheckoutSession2 = async () => {
     setLoading(true);
@@ -88,7 +85,6 @@ function Basket() {
     const createCheckoutSession = async () => {
         console.log("items2222=");
         console.log(items);
-        console.log(totalQuantity);
         const lines = items.map(item => ({
             quantity: item.quantity,
             variantId: item.id,
@@ -104,10 +100,15 @@ function Basket() {
 
         const errorMessages = createCheckoutData?.checkoutCreate?.errors.map((e) => e.message || "") || [];
         if (errorMessages.length > 0) {
-            alert(errorMessages.join("\n"));
+            console.error(errorMessages.join("\n"));
         }
         checkoutId = createCheckoutData?.checkoutCreate?.checkout?.id;
         checkoutToken = createCheckoutData?.checkoutCreate?.checkout?.token;
+
+        if (checkoutId === null || checkoutToken === null) {
+            alert("Network error. Please try again."); // 提示网络异常
+            window.location.reload(); // 中断PayPal支付流程
+        }
     };
 
     // 更新checkout的送货方式
@@ -388,24 +389,24 @@ function Basket() {
                 {/*</button>*/}
 
                   {/* PayPal Express Checkout */}
+                  <button
+                      onClick={createCheckoutSession}
+                      ref={paypalTriggerBtnRef}
+                      style={{ display: 'none' }}
+                  >
+                      {items.length}
+                  </button>
+                  {/* ↑ 在PayPalButtons.onClick时候模拟点击上面这个btn，因为直接PayPalButtons中调用createCheckoutSession获取不到最新的items*/}
                   {items.length > 0 && (
                   <PayPalButtons
-                      data-quantity={totalQuantity}
                       data-page-type="cart"
                       style={{ color: "blue", label: "checkout" }}
-                      onClick={async (data, actions) => {
-                          console.log("items111111=");
-                          console.log(items);
-                          console.log(totalQuantity);
-                          // 点击按钮逻辑
-                          // 1.创建checkout
-                          await createCheckoutSession(); // 创建checkout
-                          if (checkoutId === null || checkoutToken === null) {
-                              alert("Network error. Please try again."); // 提示网络异常
-                              return actions.reject(); // 关闭
+                      onClick={(data, actions) => {
+                          // 模拟点击上面这个btn
+                          if (paypalTriggerBtnRef.current) {
+                              // 使用 DOM API 触发按钮的点击事件
+                              paypalTriggerBtnRef.current.click();
                           }
-                          console.log("onClick data:", data);
-                          console.log("onClick actions:", actions);
                       }}
                       createOrder={(data, actions) => {
                           return actions.order.create({
@@ -449,6 +450,7 @@ function Basket() {
                       }}
                       onApprove={async (data, actions) => {
                           // 该方法被调用，说明用户已经在 PayPal 上成功完成了支付，并且支付订单已被批准
+                          // TODO .. 该方法的所有报错都需要发邮件通知站长，并补充充足的日志
                           // 1.查询支付信息（为了获取到收货地址）
                           const details = await actions.order.capture();
                           // 2.更新checkout
