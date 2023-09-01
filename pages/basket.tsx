@@ -183,47 +183,46 @@ function Basket() {
     };
 
     // 计算单个商品总价格
-    const calculateProductTotalPrice = (quantity: number, price?: PriceFragment) => {
-        if (!price) {
-            return '';
+    const calculateProductTotalPrice = (item) => {
+        const amount = new Decimal(item.pricing?.price?.gross.amount || 0);
+        return amount.times(item.quantity);
+    };
+    const calculateProductTotalPriceStr = (item) => {
+        return formatPrice({ amount: calculateProductTotalPrice(item).toNumber() } as PriceFragment);
+    };
+
+    // 计算运费
+    const calculateOrderShippingCost = (cartTotalPrice?) => {
+        if (!cartTotalPrice) {
+            cartTotalPrice = calculateCartTotalPrice();
         }
-        let totalPrice = (price.amount || 0) * quantity;
-        return formatPrice({ ...price, amount: totalPrice });
+        if (cartTotalPrice.toNumber() == 0 || cartTotalPrice.toNumber() >= freeShippingThreshold) {
+            return new Decimal(0);
+        }
+        return new Decimal(shippingCost);
+    };
+    const calculateOrderShippingCostStr = () => {
+        return formatPrice({ amount: calculateOrderShippingCost().toNumber() } as PriceFragment);
     };
 
     // 计算购物车中所有商品的总价格
     const calculateCartTotalPrice = () => {
-        let totalPrice = 0;
+        let totalPrice = new Decimal(0);
         for (const item of items) {
-            totalPrice += (item.pricing?.price?.gross?.amount || 0) * item.quantity;
+            totalPrice = totalPrice.plus(calculateProductTotalPrice(item));
         }
         return totalPrice;
     };
     const calculateCartTotalPriceStr = () => {
-        if (!items || items.length === 0) {
-            return formatPrice({ amount: 0 } as PriceFragment);
-        }
-
-        return formatPrice({ ...items[0].pricing?.price?.gross, amount: calculateCartTotalPrice() });
+        return formatPrice({ amount: calculateCartTotalPrice().toNumber() } as PriceFragment);
     };
     // 计算购物车中所有商品+税+运费的总价格
-    const calculateCartTotalPrice2 = () => {
-        let totalPrice = 0;
-        for (const item of items) {
-            totalPrice += (item.pricing?.price?.gross?.amount || 0) * item.quantity;
-        }
-        // 如果不满免运费
-        if (totalPrice < freeShippingThreshold) {
-            totalPrice += shippingCost;
-        }
-        return totalPrice;
+    const calculateTotalPrice = () => {
+        let totalPrice = calculateCartTotalPrice();
+        return totalPrice.plus(calculateOrderShippingCost(totalPrice));
     };
-    const calculateCartTotalPriceStr2 = () => {
-        if (!items || items.length === 0) {
-            return formatPrice({ amount: 0 } as PriceFragment);
-        }
-
-        return formatPrice({ ...items[0].pricing?.price?.gross, amount: calculateCartTotalPrice2() });
+    const calculateTotalPriceStr = () => {
+        return formatPrice({ amount: calculateTotalPrice().toNumber() } as PriceFragment);
     };
 
     // TODO ... 这些变量需要从后台查出
@@ -231,12 +230,7 @@ function Basket() {
     const shippingCost = 8.0; // 不免运费时的运费
 
     const getRemainingAmountForFreeShipping = () => {
-        let totalPrice = new Decimal(0);
-        for (const item of items) {
-            totalPrice = totalPrice.plus(
-                new Decimal(item.pricing?.price?.gross?.amount || 0).times(item.quantity)
-            );
-        }
+        let totalPrice = calculateCartTotalPrice();
 
         const remainingAmount = new Decimal(freeShippingThreshold).minus(totalPrice);
         return remainingAmount.greaterThanOrEqualTo(0) ? remainingAmount.toNumber() : 0;
@@ -337,7 +331,7 @@ function Basket() {
                                             className="flex justify-between place-items-center text-sm mb-1"
                                         >
                                             <p className="pr-3">{item.productName}{item.productVariantCount > 1 ? `（${item.name}）` : ''}</p>
-                                            <p className="text-right text-cusblack">{ calculateProductTotalPrice(item.quantity, item.pricing?.price?.gross) }</p>
+                                            <p className="text-right text-cusblack">{ calculateProductTotalPriceStr(item) }</p>
                                         </div>
                                     ))}
                                 </div>
@@ -345,10 +339,10 @@ function Basket() {
                                 <div className="my-3 border-b border-cusblack pb-2 font-semibold">
                                     <div className="flex justify-between place-items-center text-sm mb-1">
                                         <p>SHIPPING COST</p>
-                                        {getRemainingAmountForFreeShipping() === 0 ? (
+                                        {calculateOrderShippingCost().toNumber() == 0 ? (
                                             <p className="text-right text-cusblack">FREE</p>
                                         ) : (
-                                            <p className="font-semibold text-right text-cusblack">{formatPrice({ amount: shippingCost } as PriceFragment)}</p>
+                                            <p className="font-semibold text-right text-cusblack">{calculateOrderShippingCostStr()}</p>
                                         )}
                                     </div>
                                     <div className="flex justify-between place-items-center text-sm mb-1">
@@ -358,7 +352,7 @@ function Basket() {
                                 </div>
                                 <div className="flex justify-between place-items-center font-semibold mb-4">
                                     <p>TOTAL</p>
-                                    <p className="font-semibold text-right text-cusblack">{ calculateCartTotalPriceStr2() }</p>
+                                    <p className="font-semibold text-right text-cusblack">{ calculateTotalPriceStr() }</p>
                                 </div>
 
                                 {/*<button*/}
@@ -396,44 +390,41 @@ function Basket() {
                                             console.log("onClick actions:", actions);
                                         }}
                                         createOrder={(data, actions) => {
-                                            return actions.order.create({
+                                            const paypalOrder = {
                                                 purchase_units: [
                                                     {
                                                         amount: {
                                                             currency_code: "USD",
-                                                            value: "5.00",
+                                                            value: calculateTotalPrice().toFixed(2), // 使用总金额，并四舍五入到两位小数
                                                             breakdown: {
                                                                 item_total: {
-                                                                    currency_code: 'USD',
-                                                                    value: "3.00",
+                                                                    currency_code: "USD",
+                                                                    value: calculateCartTotalPrice().toFixed(2), // 使用总金额，并四舍五入到两位小数
                                                                 },
                                                                 shipping: {
-                                                                    currency_code: 'USD',
-                                                                    value: "2.00",
+                                                                    currency_code: "USD",
+                                                                    value: calculateOrderShippingCost().toFixed(2),
                                                                 },
-                                                            }
+                                                            },
                                                         },
-                                                        items: [
-                                                            {
-                                                                name: "Product 1",
-                                                                quantity: "1",
-                                                                unit_amount: {
-                                                                    currency_code: "USD",
-                                                                    value: "1.00",
-                                                                },
-                                                            },
-                                                            {
-                                                                name: "Product 2",
-                                                                quantity: "2",
-                                                                unit_amount: {
-                                                                    currency_code: "USD",
-                                                                    value: "1.00",
-                                                                },
-                                                            },
-                                                        ],
+                                                        items: [],
                                                     },
                                                 ],
-                                            });
+                                            };
+                                            // 遍历items并添加到createOrderInfo中
+                                            for (const item of items) {
+                                                const itemInfo = {
+                                                    name: item.productName + (item.productVariantCount > 1 ? '（' + item.name + '）' : ''),
+                                                    quantity: item.quantity.toString(),
+                                                    unit_amount: {
+                                                        currency_code: item.pricing.price.gross.currency,
+                                                        value: calculateProductTotalPrice(item).toFixed(2),
+                                                    },
+                                                };
+                                                paypalOrder.purchase_units[0].items.push(itemInfo);
+                                            }
+
+                                            return actions.order.create(paypalOrder);
                                         }}
                                         onApprove={async (data, actions) => {
                                             // 该方法被调用，说明用户已经在 PayPal 上成功完成了支付，并且支付订单已被批准
@@ -450,8 +441,6 @@ function Basket() {
                                             await updateCheckoutShippingMethodSession();
                                             // 3.创建订单
                                             const orderData = await createOrderSession();
-                                            console.log(orderData);
-                                            // TODO .. (暂缓) 4.更新订单状态
 
                                             // 5.跳转至订单详情页面
                                             // Construct the URL with the orderId and other parameters
