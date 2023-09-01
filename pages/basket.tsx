@@ -102,11 +102,6 @@ function Basket() {
 
         checkoutId = createCheckoutData?.checkoutCreate?.checkout?.id;
         checkoutToken = createCheckoutData?.checkoutCreate?.checkout?.token;
-
-        console.log("checkoutId==");
-        console.log(checkoutId);
-        console.log("checkoutToken==");
-        console.log(checkoutToken);
     };
 
     // 更新checkout的送货方式
@@ -180,14 +175,12 @@ function Basket() {
                 id: checkoutId,
             },
         });
-        if (data?.orderCreateFromCheckout?.errors.length) {
-            console.log(data?.orderCreateFromCheckout?.errors);
+        if (!data?.orderCreateFromCheckout?.order) {
+            alert("Network error. Please try again."); // 提示网络异常
             return null;
         }
-        console.log(data);
         return data?.orderCreateFromCheckout?.order;
     };
-
 
     // 计算单个商品总价格
     const calculateProductTotalPrice = (quantity: number, price?: PriceFragment) => {
@@ -462,14 +455,16 @@ function Basket() {
 
                                             // 5.跳转至订单详情页面
                                             // Construct the URL with the orderId and other parameters
-                                            const orderId = orderData.id;
-                                            const baseUrl = '/checkout/';
-                                            const domain = 'www.eminstore.com';
-                                            const locale = 'en-US';
-                                            const saleorApiUrl = encodeURIComponent('https://data.eminstore.com/graphql/');
+                                            if (orderData) {
+                                                const orderId = orderData.id;
+                                                const baseUrl = '/checkout/';
+                                                const domain = 'www.eminstore.com';
+                                                const locale = 'en-US';
+                                                const saleorApiUrl = encodeURIComponent('https://data.eminstore.com/graphql/');
 
-                                            // Perform the page redirection
-                                            window.location.href = `${baseUrl}?domain=${domain}&locale=${locale}&order=${orderId}&saleorApiUrl=${saleorApiUrl}`;
+                                                // Perform the page redirection
+                                                window.location.href = `${baseUrl}?domain=${domain}&locale=${locale}&order=${orderId}&saleorApiUrl=${saleorApiUrl}`;
+                                            }
                                         }}
                                         onError={(error) => {
                                             console.log("PayPal error:", error);
