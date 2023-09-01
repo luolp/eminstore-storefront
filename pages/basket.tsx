@@ -97,10 +97,16 @@ function Basket() {
 
         const errorMessages = createCheckoutData?.checkoutCreate?.errors.map((e) => e.message || "") || [];
         if (errorMessages.length > 0) {
-            console.error(errorMessages.join("\n"));
+            alert(errorMessages.join("\n"));
         }
+
         checkoutId = createCheckoutData?.checkoutCreate?.checkout?.id;
         checkoutToken = createCheckoutData?.checkoutCreate?.checkout?.token;
+
+        console.log("checkoutId==");
+        console.log(checkoutId);
+        console.log("checkoutToken==");
+        console.log(checkoutToken);
     };
 
     // 更新checkout的送货方式
@@ -390,8 +396,7 @@ function Basket() {
                                             // 点击按钮逻辑
                                             // 1.创建checkout
                                             await createCheckoutSession(); // 创建checkout
-                                            if (checkoutId === null || checkoutToken === null) {
-                                                alert("Network error. Please try again."); // 提示网络异常
+                                            if (!checkoutId || !checkoutToken) {
                                                 return actions.reject(); // 关闭
                                             }
                                             console.log("onClick data:", data);
