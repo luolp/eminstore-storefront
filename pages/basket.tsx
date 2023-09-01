@@ -418,7 +418,7 @@ function Basket() {
                                                     quantity: item.quantity.toString(),
                                                     unit_amount: {
                                                         currency_code: item.pricing.price.gross.currency,
-                                                        value: calculateProductTotalPrice(item).toFixed(2),
+                                                        value: item.pricing.price.gross.amount.toFixed(2)
                                                     },
                                                 };
                                                 paypalOrder.purchase_units[0].items.push(itemInfo);
