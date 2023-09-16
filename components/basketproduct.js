@@ -20,7 +20,7 @@ function BasketProduct({ item, idx }) {
             animate={{ scale: 1, x: 0, y: 0, opacity: 1 }}
           >
             <img
-              className="w-full md:w-32 h-32 object-cover rounded-xl"
+              className="w-full md:w-32 object-cover rounded-xl"
               src={item.media[0].url}
               alt=""
             />
