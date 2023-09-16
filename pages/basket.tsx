@@ -447,7 +447,7 @@ function Basket() {
                                             // Construct the URL with the orderId and other parameters
                                             if (orderData) {
                                                 // 清空购物车
-                                                dispatch(deleteFromBasket());
+                                                dispatch(deleteFromBasket(orderData.id));
 
                                                 const orderId = orderData.id;
                                                 const baseUrl = '/checkout/';
