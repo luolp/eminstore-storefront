@@ -30248,6 +30248,22 @@ export type CurrentUserAddressesQueryVariables = Exact<{ [key: string]: never; }
 
 export type CurrentUserAddressesQuery = { __typename?: 'Query', me?: { __typename?: 'User', addresses: Array<{ __typename?: 'Address', id: string, phone?: string | null, firstName: string, lastName: string, streetAddress1: string, city: string, postalCode: string, isDefaultBillingAddress?: boolean | null, isDefaultShippingAddress?: boolean | null, country: { __typename?: 'CountryDisplay', code: string, country: string } }> } | null };
 
+export type OrderLineInfoFragment = { __typename?: 'OrderLine', id: string, quantity: number, productName: string, variantName: string, variant?: { __typename?: 'ProductVariant', name: string, attributes: Array<{ __typename?: 'SelectedAttribute', values: Array<{ __typename?: 'AttributeValue', name?: string | null, dateTime?: string | null, boolean?: boolean | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null }> }> } | null, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, undiscountedUnitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', alt?: string | null, url: string } | null };
+
+export type ShippingFragment = { __typename?: 'ShippingMethod', name: string, minimumDeliveryDays?: number | null, maximumDeliveryDays?: number | null };
+
+export type AddressInfoFragment = { __typename?: 'Address', id: string, city: string, phone?: string | null, postalCode: string, companyName: string, cityArea: string, streetAddress1: string, streetAddress2: string, countryArea: string, firstName: string, lastName: string, country: { __typename?: 'CountryDisplay', country: string, code: string } };
+
+export type OrderInfoFragment = { __typename?: 'Order', id: string, number: string, userEmail?: string | null, isPaid: boolean, discounts: Array<{ __typename?: 'OrderDiscount', type: OrderDiscountType, name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }>, shippingAddress?: { __typename?: 'Address', id: string, city: string, phone?: string | null, postalCode: string, companyName: string, cityArea: string, streetAddress1: string, streetAddress2: string, countryArea: string, firstName: string, lastName: string, country: { __typename?: 'CountryDisplay', country: string, code: string } } | null, billingAddress?: { __typename?: 'Address', id: string, city: string, phone?: string | null, postalCode: string, companyName: string, cityArea: string, streetAddress1: string, streetAddress2: string, countryArea: string, firstName: string, lastName: string, country: { __typename?: 'CountryDisplay', country: string, code: string } } | null, deliveryMethod?: { __typename?: 'ShippingMethod', name: string, minimumDeliveryDays?: number | null, maximumDeliveryDays?: number | null } | { __typename?: 'Warehouse' } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, voucher?: { __typename?: 'Voucher', code: string } | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, subtotal: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, quantity: number, productName: string, variantName: string, variant?: { __typename?: 'ProductVariant', name: string, attributes: Array<{ __typename?: 'SelectedAttribute', values: Array<{ __typename?: 'AttributeValue', name?: string | null, dateTime?: string | null, boolean?: boolean | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null }> }> } | null, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, undiscountedUnitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', alt?: string | null, url: string } | null }>, totalBalance: { __typename?: 'Money', currency: string, amount: number }, totalCaptured: { __typename?: 'Money', currency: string, amount: number } };
+
+export type OrderQueryVariables = Exact<{
+  id: Scalars['ID'];
+  locale: LanguageCodeEnum;
+}>;
+
+
+export type OrderQuery = { __typename?: 'Query', order?: { __typename?: 'Order', id: string, number: string, userEmail?: string | null, isPaid: boolean, discounts: Array<{ __typename?: 'OrderDiscount', type: OrderDiscountType, name?: string | null, amount: { __typename?: 'Money', currency: string, amount: number } }>, shippingAddress?: { __typename?: 'Address', id: string, city: string, phone?: string | null, postalCode: string, companyName: string, cityArea: string, streetAddress1: string, streetAddress2: string, countryArea: string, firstName: string, lastName: string, country: { __typename?: 'CountryDisplay', country: string, code: string } } | null, billingAddress?: { __typename?: 'Address', id: string, city: string, phone?: string | null, postalCode: string, companyName: string, cityArea: string, streetAddress1: string, streetAddress2: string, countryArea: string, firstName: string, lastName: string, country: { __typename?: 'CountryDisplay', country: string, code: string } } | null, deliveryMethod?: { __typename?: 'ShippingMethod', name: string, minimumDeliveryDays?: number | null, maximumDeliveryDays?: number | null } | { __typename?: 'Warehouse' } | null, total: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number }, tax: { __typename?: 'Money', currency: string, amount: number } }, voucher?: { __typename?: 'Voucher', code: string } | null, shippingPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, subtotal: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, lines: Array<{ __typename?: 'OrderLine', id: string, quantity: number, productName: string, variantName: string, variant?: { __typename?: 'ProductVariant', name: string, attributes: Array<{ __typename?: 'SelectedAttribute', values: Array<{ __typename?: 'AttributeValue', name?: string | null, dateTime?: string | null, boolean?: boolean | null, translation?: { __typename?: 'AttributeValueTranslation', name: string } | null }> }> } | null, totalPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, undiscountedUnitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, unitPrice: { __typename?: 'TaxedMoney', gross: { __typename?: 'Money', currency: string, amount: number } }, thumbnail?: { __typename?: 'Image', alt?: string | null, url: string } | null }>, totalBalance: { __typename?: 'Money', currency: string, amount: number }, totalCaptured: { __typename?: 'Money', currency: string, amount: number } } | null };
+
 export const AttributeFilterChoiceFragmentDoc = gql`
     fragment AttributeFilterChoiceFragment on AttributeValue {
   id
@@ -30889,6 +30905,129 @@ export const OrderFragmentDoc = gql`
     ${AddressFragmentDoc}
 ${MoneyFragmentDoc}
 ${OrderLineFragmentDoc}`;
+export const AddressInfoFragmentDoc = gql`
+    fragment AddressInfo on Address {
+  id
+  city
+  phone
+  postalCode
+  companyName
+  cityArea
+  streetAddress1
+  streetAddress2
+  countryArea
+  country {
+    country
+    code
+  }
+  firstName
+  lastName
+}
+    `;
+export const ShippingFragmentDoc = gql`
+    fragment Shipping on ShippingMethod {
+  name
+  minimumDeliveryDays
+  maximumDeliveryDays
+}
+    `;
+export const OrderLineInfoFragmentDoc = gql`
+    fragment OrderLineInfo on OrderLine {
+  id
+  quantity
+  variant {
+    name
+    attributes(variantSelection: ALL) {
+      values {
+        name
+        dateTime
+        boolean
+        translation(languageCode: $locale) {
+          name
+        }
+      }
+    }
+  }
+  totalPrice {
+    gross {
+      ...Money
+    }
+  }
+  undiscountedUnitPrice {
+    gross {
+      ...Money
+    }
+  }
+  unitPrice {
+    gross {
+      ...Money
+    }
+  }
+  productName
+  variantName
+  thumbnail {
+    alt
+    url
+  }
+}
+    ${MoneyFragmentDoc}`;
+export const OrderInfoFragmentDoc = gql`
+    fragment OrderInfo on Order {
+  id
+  number
+  userEmail
+  isPaid
+  discounts {
+    type
+    name
+    amount {
+      ...Money
+    }
+  }
+  shippingAddress {
+    ...AddressInfo
+  }
+  billingAddress {
+    ...AddressInfo
+  }
+  deliveryMethod {
+    ...Shipping
+  }
+  total {
+    gross {
+      ...Money
+    }
+    tax {
+      ...Money
+    }
+  }
+  voucher {
+    code
+  }
+  shippingPrice {
+    gross {
+      ...Money
+    }
+  }
+  subtotal {
+    gross {
+      ...Money
+    }
+  }
+  lines {
+    ...OrderLineInfo
+  }
+  totalBalance {
+    ...Money
+  }
+  totalCaptured {
+    ...Money
+  }
+}
+    ${MoneyFragmentDoc}
+${AddressInfoFragmentDoc}
+${ShippingFragmentDoc}
+${OrderLineInfoFragmentDoc}`;
 export const AddressDeleteDocument = gql`
     mutation AddressDelete($id: ID!) {
   accountAddressDelete(id: $id) {
@@ -32651,6 +32790,42 @@ export function useCurrentUserAddressesLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type CurrentUserAddressesQueryHookResult = ReturnType<typeof useCurrentUserAddressesQuery>;
 export type CurrentUserAddressesLazyQueryHookResult = ReturnType<typeof useCurrentUserAddressesLazyQuery>;
 export type CurrentUserAddressesQueryResult = Apollo.QueryResult<CurrentUserAddressesQuery, CurrentUserAddressesQueryVariables>;
+export const OrderDocument = gql`
+    query order($id: ID!, $locale: LanguageCodeEnum!) {
+  order(id: $id) {
+    ...OrderInfo
+  }
+}
+    ${OrderInfoFragmentDoc}`;
+
+/**
+ * __useOrderQuery__
+ *
+ * To run a query within a React component, call `useOrderQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrderQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrderQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *      locale: // value for 'locale'
+ *   },
+ * });
+ */
+export function useOrderQuery(baseOptions: Apollo.QueryHookOptions<OrderQuery, OrderQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrderQuery, OrderQueryVariables>(OrderDocument, options);
+      }
+export function useOrderLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrderQuery, OrderQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrderQuery, OrderQueryVariables>(OrderDocument, options);
+        }
+export type OrderQueryHookResult = ReturnType<typeof useOrderQuery>;
+export type OrderLazyQueryHookResult = ReturnType<typeof useOrderLazyQuery>;
+export type OrderQueryResult = Apollo.QueryResult<OrderQuery, OrderQueryVariables>;
 export type AccountAddressCreateKeySpecifier = ('accountErrors' | 'address' | 'errors' | 'user' | AccountAddressCreateKeySpecifier)[];
 export type AccountAddressCreateFieldPolicy = {
 	accountErrors?: FieldPolicy<any> | FieldReadFunction<any>,
