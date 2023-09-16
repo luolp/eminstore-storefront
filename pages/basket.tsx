@@ -1,9 +1,9 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import BasketProduct from "../components/basketproduct";
 import Header from "../components/header";
-import { selectItems } from "../slices/basketSlice";
+import { selectItems, deleteFromBasket } from "../slices/basketSlice";
 import nookies from "nookies";
 import Head from "next/head";
 import { useRouter } from "next/dist/client/router";
@@ -21,6 +21,7 @@ import { PayPalButtons, usePayPalScriptReducer} from '@paypal/react-paypal-js';
 
 function Basket() {
     const router = useRouter();
+    const dispatch = useDispatch();
     const { formatPrice, currentChannel } = useRegions();
     const tempItems = useSelector(selectItems);
     const [items, setItems] = useState([]);
@@ -445,6 +446,9 @@ function Basket() {
                                             // 5.跳转至订单详情页面
                                             // Construct the URL with the orderId and other parameters
                                             if (orderData) {
+                                                // 清空购物车
+                                                dispatch(deleteFromBasket());
+
                                                 const orderId = orderData.id;
                                                 const baseUrl = '/checkout/';
                                                 const domain = 'www.eminstore.com';
