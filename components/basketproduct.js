@@ -14,13 +14,13 @@ function BasketProduct({ item, idx }) {
       suppressHydrationWarning
     >
       <Link href={"/product/" + item.productSlug + "/" + item.sku}>
-        <div className="image md:flex cursor-pointer">
+        <div className="image flex cursor-pointer">
           <motion.div
             initial={{ scale: 1.5, x: 50, y: -50, opacity: 0 }}
             animate={{ scale: 1, x: 0, y: 0, opacity: 1 }}
           >
             <img
-              className="w-full md:w-32 object-cover rounded-xl"
+              className="w-32 md:w-32 object-cover rounded-xl"
               src={item.media[0].url}
               alt=""
             />
