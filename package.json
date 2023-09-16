@@ -41,6 +41,7 @@
     "@babel/core": "^7.0.1",
     "stripe": "^8.172.0",
     "clsx": "1.2.1",
+    "lodash-es": "4.17.21",
     "decimal.js": "^10.4.3",
     "@paypal/react-paypal-js": "^7.6.0"
   },
