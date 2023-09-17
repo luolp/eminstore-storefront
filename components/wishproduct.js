@@ -23,16 +23,15 @@ function WishProduct({ item, idx }) {
       </motion.div>
       <div className="px-2 py-1 text-cusblack">
         <p className="text-sm line-clamp-1">{item.name}</p>
-          <p className="font-semibold text-right text-cusblack">{formatPrice(item.pricing?.priceRange?.start?.gross)}</p>
-
+          <p className="font-semibold text-sm text-cusblack mb-1">{formatPrice(item.pricing?.priceRange?.start?.gross)}</p>
         <Link href={"/product/" + item.slug}>
-          <button className="text-white bg-cusblack border border-cusblack py-1 text-xs w-full rounded-lg">
+          <button className="text-white bg-cusblack border border-cusblack py-1 text-xs w-full rounded">
             View product
           </button>
         </Link>
         <button
           onClick={() => dispatch(removeFromWishlist(item))}
-          className="text-cusblack mt-1.5 bg-white border border-cusblack py-1 text-xs w-full rounded-lg"
+          className="text-cusblack mt-1.5 bg-white border border-cusblack py-1 text-xs w-full rounded"
         >
           Remove
         </button>

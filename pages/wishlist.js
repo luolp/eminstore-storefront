@@ -38,7 +38,7 @@ function WishList() {
                   <h1>WISHLIST</h1>
                 </div>
                 <img
-                  src="https://i.ibb.co/N23Cxhz/8b683a2f7a998bdd6df80046dc1f5292.jpg"
+                  src="\wishlist.jpg"
                   className="object-cover rounded-xl w-full"
                   alt=""
                 />
