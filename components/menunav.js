@@ -42,16 +42,16 @@ function MenuNav({ handleOpen, isOpen }) {
               Shop
             </li>
           </Link>
-          <Link href="/ourstore">
+          <Link href="/about">
             <li className="mb-2 hover:underline mx-4 rounded-xl cursor-pointer">
               About
             </li>
           </Link>
-          <Link href="/ourstore">
-            <li className="mb-2 hover:underline mx-4 rounded-xl cursor-pointer">
-              Our Store
-            </li>
-          </Link>
+          {/*<Link href="/ourstore">*/}
+            {/*<li className="mb-2 hover:underline mx-4 rounded-xl cursor-pointer">*/}
+              {/*Our Store*/}
+            {/*</li>*/}
+          {/*</Link>*/}
         </ul>
       </div>
     </motion.div>
