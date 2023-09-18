@@ -174,7 +174,7 @@ function Product({ product, dataAlso, variantSKU }) {
                             onClick={handleImageClick}
                         />
                     </div>
-                    <div className="px-2 md:px-0 flex mt-4">
+                    <div className="px-2 md:px-0 flex mt-4 overflow-x-scroll whitespace-nowrap">
                         {variantInfoMap[selectedVariantKey]["media"].map((media, idx) => (
                             <img
                                 key={idx}
