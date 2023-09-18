@@ -73,7 +73,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
 
-          // <!-- Google tag (gtag.js) -->
+            {/*Google tag (gtag.js)*/}
             <script async src="https://www.googletagmanager.com/gtag/js?id=G-L5KXY7CS9J"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
