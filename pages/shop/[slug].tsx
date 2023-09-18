@@ -9,13 +9,21 @@ import {
     CategoryPathsDocument,
     CategoryPathsQuery,
     CollectionPathsDocument,
-    CollectionPathsQuery, ProductCollectionDocument, ProductCollectionQuery
+    CollectionPathsQuery, CollectionBySlugDocument, CollectionBySlugQuery, ProductCollectionDocument, ProductCollectionQuery
 } from "@/saleor/api";
 import {serverApolloClient} from "@/lib/auth/useAuthenticatedApolloClient";
 import {ApolloQueryResult} from "@apollo/client/index";
 
 export async function getStaticProps({ params }) {
   const { slug } = params;
+    // 查询当前选中集合的信息
+    const collectionDetailResult: ApolloQueryResult<CollectionBySlugQuery | undefined> =
+        await serverApolloClient.query({
+            query: CollectionBySlugDocument,
+            variables: { slug: slug, channel: 'default-channel', locale: 'EN_US' }
+        });
+    const collection = collectionDetailResult.data?.collection || {};
+
     // 所有分类
     const categorieResult: ApolloQueryResult<CategoryPathsQuery | undefined> =
         await serverApolloClient.query({
@@ -51,6 +59,7 @@ export async function getStaticProps({ params }) {
       data,
       dataItems,
       dataTypes,
+        collection,
     },
     revalidate: 5,
   };
@@ -78,7 +87,7 @@ export async function getStaticPaths() {
   };
 }
 
-function Category({ data, dataItems, dataTypes }) {
+function Category({ data, dataItems, dataTypes, collection }) {
   const [sort, setSort] = useState(0);
   const recent_category = useSelector(recentCategory);
   const data_items = dataItems
@@ -102,7 +111,18 @@ function Category({ data, dataItems, dataTypes }) {
   return (
     <>
       <Head>
-        <title>eminstore | Shop</title>
+          <title>{collection.seoTitle}</title>
+          <meta name="description" content={collection.seoDescription} />
+
+          <meta name="twitter:card" content="summary" />
+          {/* 下面4个是和twitter共用的 */}
+          <meta property="og:url" content={`https://www.eminstore.com/shop/${collection.slug}/`} />
+          <meta property="og:title" content={collection.seoTitle} />
+          <meta property="og:description" content={collection.seoDescription} />
+          <meta property="og:image" content="https://www.eminstore.com/eminstore.png" />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="eminstore" />
       </Head>
       <Layout categories={data} setSort={setSort} types={dataTypes}>
         {data_items.length > 0 ? (

@@ -131,10 +131,30 @@ function Product({ product, dataAlso, variantSKU }) {
         }, 500);
     };
 
+    const seoTitle = product.seoTitle || product.name;
+    const seoDescription = product.seoDescription;
+
+    let url = `https://www.eminstore.com/product/${product.slug}`;
+// 如果 variantSKU 不为 null，将其添加到 URL 中
+    if (variantSKU !== null) {
+        url += `/${variantSKU}/`;
+    }
+
   return (
     <>
       <Head>
-        <title>{product.name}</title>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+
+          <meta name="twitter:card" content="summary_large_image" />
+          {/* 下面4个是和twitter共用的 */}
+          <meta property="og:url" content={url} />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content={variantInfoMap[selectedVariantKey]["media"][0].url} />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="eminstore" />
       </Head>
       <div className="bg-cusgray min-h-screen pb-10">
         <Header />

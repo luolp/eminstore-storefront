@@ -11,10 +11,25 @@ function WishList() {
   useEffect(() => {
     setItems(data);
   });
-  return (
+
+    const seoTitle = "Wishlist - Save Your Favorite Products | eminstore";
+    const seoDescription = "Create and manage your wishlist at Eminstore. Save your favorite products and plan your future purchases. Explore a curated list of items you love.";
+
+    return (
     <>
       <Head>
-        <title>eminstore | Wishlist</title>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+
+          <meta name="twitter:card" content="summary" />
+          {/* 下面4个是和twitter共用的 */}
+          <meta property="og:url" content="https://www.eminstore.com/wishlist/" />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content="https://www.eminstore.com/eminstore.png" />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="eminstore" />
       </Head>
       <div className="w-full min-h-screen relative bg-cusgray pb-10">
         <Header />

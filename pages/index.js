@@ -40,10 +40,24 @@ export default function Home() {
     },
   };
 
+  const seoTitle = "eminstore - Quality Shopping, Affordable Prices";
+  const seoDescription = "eminstore is a comprehensive e-commerce website dedicated to selling high-quality products at affordable prices.";
+
   return (
     <>
       <Head>
-        <title>eminstore | Home</title>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+
+          <meta name="twitter:card" content="summary" />
+          {/* 下面4个是和twitter共用的 */}
+          <meta property="og:url" content="https://www.eminstore.com" />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content="https://www.eminstore.com/eminstore.png" />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="eminstore" />
       </Head>
       <div className="w-full h-screen relative">
         <Header />

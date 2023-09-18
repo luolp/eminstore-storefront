@@ -243,10 +243,24 @@ function Basket() {
         setPromoCode(event.target.value.toUpperCase());
     };
 
+    const seoTitle = "Your Shopping Cart - Eminstore | Review and Checkout Your Items";
+    const seoDescription = "Review and checkout items in your shopping cart at Eminstore. Explore the products you've selected and complete your purchase with ease.";
+
     return (
         <>
             <Head>
-                <title>eminstore | Basket</title>
+                <title>{seoTitle}</title>
+                <meta name="description" content={seoDescription} />
+
+                <meta name="twitter:card" content="summary" />
+                {/* 下面4个是和twitter共用的 */}
+                <meta property="og:url" content="https://www.eminstore.com/basket/" />
+                <meta property="og:title" content={seoTitle} />
+                <meta property="og:description" content={seoDescription} />
+                <meta property="og:image" content="https://www.eminstore.com/eminstore.png" />
+
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content="eminstore" />
             </Head>
             <div className="w-full min-h-screen relative bg-cusgray pb-10">
                 <Header />

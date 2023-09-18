@@ -3,10 +3,26 @@ import Header from "../components/header";
 import Head from "next/head";
 
 function OurStore() {
-  return (
+
+    const seoTitle = "About Eminstore - Our Story, Mission, and Contact Information | eminstore";
+    const seoDescription = "Explore the story and mission behind Eminstore, along with our contact details and social media accounts.";
+
+    return (
     <>
       <Head>
-        <title>eminstore | About</title>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+
+          <meta name="twitter:card" content="summary" />
+          {/* 下面4个是和twitter共用的 */}
+          <meta property="og:url" content="https://www.eminstore.com/about/" />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content="https://www.eminstore.com/eminstore.png" />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="eminstore" />
+
           <link
               rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"

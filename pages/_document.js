@@ -17,7 +17,6 @@ class MyDocument extends Document {
             content="default"
           />
           <meta name="apple-mobile-web-app-title" content="eminstore" />
-          <meta name="description" content="Shoe Store Based in Indonesia" />
           <meta name="format-detection" content="telephone=no" />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta
@@ -59,24 +58,8 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
           />
 
-          <meta name="twitter:card" content="summary" />
-          <meta name="twitter:url" content="https://eminstore.com" />
-          <meta name="twitter:title" content="eminstore" />
-          <meta
-            name="twitter:description"
-            content="Shoe Store based in Indonesia"
-          />
-          <meta name="twitter:image" content="/icon-192x192.png" />
-          <meta name="twitter:creator" content="@mudzikale" />
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="eminstore" />
-          <meta
-            property="og:description"
-            content="Shoe Store based in Indonesia"
-          />
-          <meta property="og:site_name" content="eminstore" />
-          <meta property="og:url" content="https://eminstore.com" />
-          <meta property="og:image" content="/icon-192x192.png" />
+          <meta name="twitter:creator" content="@Hi_EminX" />
+
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="manifest" href="/manifest.json" />
           <link rel="icon" href="/icon-512x512.png" type="image/x-icon" />

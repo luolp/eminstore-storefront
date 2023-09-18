@@ -86,10 +86,24 @@ function Category({ data, dataItems, dataTypes }) {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  return (
+    const seoTitle = "Explore Our Shop - Eminstore | Discover a Wide Range of High-Quality Products";
+    const seoDescription = "Discover a wide range of high-quality products at Eminstore's online shop. Explore our curated selection and find the perfect items for your needs.";
+
+    return (
     <>
       <Head>
-        <title>eminstore | Shop</title>
+          <title>{seoTitle}</title>
+          <meta name="description" content={seoDescription} />
+
+          <meta name="twitter:card" content="summary" />
+          {/* 下面4个是和twitter共用的 */}
+          <meta property="og:url" content="https://www.eminstore.com/shop/" />
+          <meta property="og:title" content={seoTitle} />
+          <meta property="og:description" content={seoDescription} />
+          <meta property="og:image" content="https://www.eminstore.com/eminstore.png" />
+
+          <meta property="og:type" content="website" />
+          <meta property="og:site_name" content="eminstore" />
       </Head>
       <Layout categories={data} setSort={setSort} types={dataTypes}>
         {!loading ? (
