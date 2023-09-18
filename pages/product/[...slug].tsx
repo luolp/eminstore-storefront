@@ -146,7 +146,7 @@ function Product({ product, dataAlso, variantSKU }) {
           <title>{seoTitle}</title>
           <meta name="description" content={seoDescription} />
 
-          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:card" content="summary" />
           {/* 下面4个是和twitter共用的 */}
           <meta property="og:url" content={url} />
           <meta property="og:title" content={seoTitle} />
