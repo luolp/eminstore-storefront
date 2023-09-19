@@ -37,9 +37,9 @@ function MyApp({ Component, pageProps }) {
           <SaleorAuthProvider {...useSaleorAuthClientProps}>
               <ApolloProvider client={apolloClient}>
                   {/* PayPal沙盒账号 */}
-                  <PayPalScriptProvider options={{ "client-id": "AZWL-t91AurMPc_QJNIDXGX7klRDTtsQe1G7CegWplWlJ0fhZmmhGkRhh8oALtJ-q1GMQcn0knYh03c0" }}>
+                  {/*<PayPalScriptProvider options={{ "client-id": "AZWL-t91AurMPc_QJNIDXGX7klRDTtsQe1G7CegWplWlJ0fhZmmhGkRhh8oALtJ-q1GMQcn0knYh03c0" }}>*/}
                   {/* PayPal正式账号 */}
-                  {/*<PayPalScriptProvider options={{ "client-id": "AYypkTwKb-agVMyxJByKU__0DIwLFQ0mQuSbPpkmU3d_XiZZNbA9UPKMxWWuGqDdj7LNjCbUSE0xnL2S" }}>*/}
+                  <PayPalScriptProvider options={{ "client-id": "AYypkTwKb-agVMyxJByKU__0DIwLFQ0mQuSbPpkmU3d_XiZZNbA9UPKMxWWuGqDdj7LNjCbUSE0xnL2S" }}>
                   <CheckoutProvider>
                       <RegionsProvider>
                           <Provider store={store}>
