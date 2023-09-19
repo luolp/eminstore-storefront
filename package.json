@@ -3,6 +3,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "next-sitemap",
     "start": "next start",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w"
   },
