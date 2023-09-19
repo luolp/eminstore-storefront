@@ -41,6 +41,7 @@
     "webpack": "^5.84.1",
     "@babel/core": "^7.0.1",
     "stripe": "^8.172.0",
+    "next-sitemap": "^4.2.3",
     "decimal.js": "^10.4.3",
     "@paypal/react-paypal-js": "^7.6.0"
   },
