@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node --max-old-space-size=1024 ./node_modules/next/dist/bin/next build",
+    "build": "node --max-old-space-size=512 ./node_modules/next/dist/bin/next build",
     "postbuild": "next-sitemap",
     "start": "next start",
     "generate": "dotenv -c -- graphql-codegen --config codegen.yml -w"
