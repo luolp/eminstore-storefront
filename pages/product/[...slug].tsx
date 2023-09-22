@@ -1,5 +1,4 @@
 import React, {useEffect, useRef, useState} from "react";
-import { useRouter } from "next/router";
 import Header from "../../components/header";
 import NumberFormat from "react-number-format";
 import Link from "next/link";
@@ -61,8 +60,12 @@ function Product({ product, dataAlso, variantSKU }) {
         // 将variantSelectedMap的值串联起来赋值给selectedVariantKey
         const key = Object.values(variantSelectedMap).join("-");
         setSelectedVariantKey(key);
+
         if (variantSKU != null) {
-            window.history.pushState(null, '', '/product/' + variantInfoMap[key].productSlug + '/' + variantInfoMap[key].sku);
+            const newUrl = '/product/' + variantInfoMap[key].productSlug + '/' + variantInfoMap[key].sku + '/';
+            if (window.location.pathname !== newUrl) {
+                window.history.pushState(null, '', newUrl);
+            }
         }
     }, [variantSelectedMap]);
 
@@ -134,10 +137,10 @@ function Product({ product, dataAlso, variantSKU }) {
     const seoTitle = product.seoTitle || product.name;
     const seoDescription = product.seoDescription;
 
-    let url = `https://www.eminstore.com/product/${product.slug}`;
+    let url = `https://www.eminstore.com/product/${product.slug}/`;
 // 如果 variantSKU 不为 null，将其添加到 URL 中
     if (variantSKU !== null) {
-        url += `/${variantSKU}/`;
+        url += `${variantSKU}/`;
     }
 
   return (

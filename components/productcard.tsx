@@ -58,27 +58,28 @@ function ProductCard({ item }: { item: ProductCardFragment }) {
           </div>
         </div>
       </div>
-      <div
-        onClick={() => Router.push("/product/" + item.slug)}
-        className="px-2 py-2"
-      >
-        <p className="text-sm line-clamp-1">{item.name}</p>
-        <p className="text-xs my-2 text-gray-400">{item.category?.name}</p>
+        <a href={"/product/" + item.slug + "/"}>
+        <div
+          className="px-2 py-2"
+        >
+          <p className="text-sm line-clamp-1">{item.name}</p>
+          <p className="text-xs my-2 text-gray-400">{item.category?.name}</p>
 
-         <p className="text-sm font-semibold">{formatPrice(item.pricing?.priceRange?.start?.gross)}</p>
-        {/*<NumberFormat*/}
-          {/*value={item.price}*/}
-          {/*className="text-sm font-semibold text-cusblack"*/}
-          {/*displayType={"text"}*/}
-          {/*thousandSeparator={true}*/}
-          {/*prefix={"Rp"}*/}
-          {/*renderText={(value, props) => (*/}
-            {/*<p className="text-sm font-semibold" {...props}>*/}
-              {/*{value}*/}
-            {/*</p>*/}
-          {/*)}*/}
-        {/*/>*/}
-      </div>
+           <p className="text-sm font-semibold">{formatPrice(item.pricing?.priceRange?.start?.gross)}</p>
+          {/*<NumberFormat*/}
+            {/*value={item.price}*/}
+            {/*className="text-sm font-semibold text-cusblack"*/}
+            {/*displayType={"text"}*/}
+            {/*thousandSeparator={true}*/}
+            {/*prefix={"Rp"}*/}
+            {/*renderText={(value, props) => (*/}
+              {/*<p className="text-sm font-semibold" {...props}>*/}
+                {/*{value}*/}
+              {/*</p>*/}
+            {/*)}*/}
+          {/*/>*/}
+        </div>
+        </a>
     </div>
   );
 }
