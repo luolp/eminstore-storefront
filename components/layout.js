@@ -32,16 +32,16 @@ function Layout({ children, categories, types, setSort }) {
       </button>
       <div className="max-w-6xl mx-auto pt-14 md:px-0">
         <TopCategory typesData={types} />
-        <div className="grid grid-cols-4 gap-x-6">
+        <div className="grid grid-cols-5 gap-x-6">
           <div
             onClick={() => setOpen(!open)}
             className={`${
               open ? `fixed` : `hidden`
-            } lg:static lg:inline bg-gray-400 lg:bg-cusgray h-screen bg-opacity-30 z-20 flex w-full justify-center place-items-center top-0 lg:p-4`}
+            } lg:static lg:inline bg-gray-400 lg:bg-cusgray h-screen bg-opacity-30 z-20 flex w-full justify-center place-items-center top-0 lg:p-4 lg:px-0`}
           >
             <SideCategory categories={categories} />
           </div>
-          <div className="col-span-4 md:col-span-4 lg:col-span-3 flex flex-col py-4 mx-2 md:mx-0">
+          <div className="col-span-5 md:col-span-5 lg:col-span-4 flex flex-col py-4 mx-2 md:mx-0">
             <ShopCarousel />
             <div className="rounded-2xl overflow-hidden shadow-lg w-full bg-white mt-6 px-5 py-4">
               <div className="mb-3">
