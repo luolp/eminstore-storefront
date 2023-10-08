@@ -73,6 +73,21 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
 
+          <>
+              {/* Global Site Tag (gtag.js) - Google Analytics */}
+              <script async src={`https://www.googletagmanager.com/gtag/js?id=G-L5KXY7CS9J`} />
+              <script
+                  dangerouslySetInnerHTML={{
+                      __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-L5KXY7CS9J');
+          `,
+                  }}
+              />
+          </>
+
         </Head>
         <body>
           <Main />
