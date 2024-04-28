@@ -32564,7 +32564,7 @@ export type ProductBySlugQueryHookResult = ReturnType<typeof useProductBySlugQue
 export type ProductBySlugLazyQueryHookResult = ReturnType<typeof useProductBySlugLazyQuery>;
 export type ProductBySlugQueryResult = Apollo.QueryResult<ProductBySlugQuery, ProductBySlugQueryVariables>;
 export const ProductCollectionDocument = gql`
-    query ProductCollection($before: String, $after: String, $first: Int = 4, $filter: ProductFilterInput, $sortBy: ProductOrder, $channel: String!, $locale: LanguageCodeEnum!) {
+    query ProductCollection($before: String, $after: String, $first: Int = 100, $filter: ProductFilterInput, $sortBy: ProductOrder, $channel: String!, $locale: LanguageCodeEnum!) {
   products(
     first: $first
     channel: $channel
