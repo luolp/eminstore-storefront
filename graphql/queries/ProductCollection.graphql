@@ -1,7 +1,7 @@
 query ProductCollection(
   $before: String
   $after: String
-  $first: Int = 4
+  $first: Int = 100
   $filter: ProductFilterInput
   $sortBy: ProductOrder
   $channel: String!
